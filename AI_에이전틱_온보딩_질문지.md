@@ -26,8 +26,8 @@
 | ID | 변수명 | 질문 | 기본값 (본문) | 구분 | 결정 주체 | 본문 위치 |
 | :--- | :--- | :--- | :--- | :---: | :--- | :--- |
 | ENV-01 | `GH_ORG` | GitHub 조직(또는 계정) 이름은 무엇인가? | `<org>` | 필수 | 테크리드 | 1.2, 1.4-(2), 3.1, 3.4 |
-| ENV-02 | `SPEC_REPO` | 정본 저장소 이름은 무엇인가? | `spec-repo` (예: `sanjunmo-settlement`) | 필수 | 리드 PO/PM | 1.2 |
-| ENV-03 | `APP_REPOS` | 개발 저장소는 몇 개이며 이름은 무엇인가? (FE · BE 분리 여부 포함) | `app-repo` 1개 (예: `sanjunmo`) | 필수 | 테크리드 | 1.2 |
+| ENV-02 | `SPEC_REPO` | 정본 저장소 이름은 무엇인가? | `spec-repo` (예: `example-spec`) | 필수 | 리드 PO/PM | 1.2 |
+| ENV-03 | `APP_REPOS` | 개발 저장소는 몇 개이며 이름은 무엇인가? (FE · BE 분리 여부 포함) | `app-repo` 1개 (예: `example-app`) | 필수 | 테크리드 | 1.2 |
 | ENV-04 | `MAIN_BRANCH` | 병합 차단 게이트를 걸 기준 브랜치는 무엇인가? (`main` / `develop` / 릴리스 브랜치) | `main` | 권장 | 테크리드 | 1.2.1-1, 1.4-(2), 1.4-(4) |
 | ENV-05 | `SPEC_SYNC_METHOD` | app-repo가 정본을 받는 방식은? (스크립트 복사 / git submodule / 패키지) | `scripts/sync-spec.sh`로 `.gitignore`된 `/docs`에 복사 | 권장 | 테크리드 | 1.2, 3.4 Step 1 |
 | ENV-06 | `CROSS_REPO_AUTH` | app-repo CI가 spec-repo Issue를 읽을 권한은 무엇으로 줄 것인가? (GitHub App / 읽기 전용 PAT) · Secrets 이름은? | 미정 (기본 `GITHUB_TOKEN`은 다른 저장소 Issue를 못 읽을 수 있어 별도 권한 필요) | 필수 | 테크리드 · 보안 담당 | 1.2 (CI), 검토로그 1.5-(2) |

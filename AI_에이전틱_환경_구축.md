@@ -50,7 +50,7 @@
 4. **PO/PM의 수동 검수 병목 제거**: 각 파트 작업자가 로컬에서 **5대 스킬(`/doc-init`, `/doc-rule`, `/doc-update`, `/dev-screen`, `/spec-check`)**을 거치고 중앙 CI 자동 테스트를 통과한 코드만 병합되게 하여, 사람이 일일이 눈으로 대조하는 병목을 없앤다.
 
 ### 1.2 범용 저장소 구조 (모든 프로젝트 공통 규격)
-- **정본 저장소 (`spec-repo`, 예: `sanjunmo-settlement`)**:
+- **정본 저장소 (`spec-repo`, 예: `example-spec`)**:
   - `docs/specs/`: 도메인별 기획 정본 (`01_회원_권한.md`, `02_상품_주문.md`, `03_정산_환불.md` — 각 화면별 Figma Node URL 원본 포함)
   - `docs/contracts/`: 공통 도메인 계약 및 서술 문서 (`00_domain_contracts.md`, `00_ui_system.md`)
   - `contracts/`: 기계 검증 가능한 API 스키마 정본 (`contracts/openapi.yaml` 또는 JSON Schema)
@@ -63,7 +63,7 @@
   - `AGENTS.md`: 모든 코딩 에이전트(Claude Code 등)가 읽는 공통 행동 헌법
   - `agentic-env.yaml`: 온보딩 질문지 답변(저장소 · 담당자 · 라벨 · SLA · CI 설정값) 기록 파일 (0.1절)
   - `.github/CODEOWNERS`: 도메인별 PO/PM 및 FE/BE 테크리드 팀(기본 예시 `@org/fe-leads`, `@org/be-leads`, ENV-10 · ENV-11) 자동 할당 규칙 파일
-- **개발 저장소 (`app-repo`, 예: `sanjunmo`)**:
+- **개발 저장소 (`app-repo`, 예: `example-app`)**:
   - 실제 백엔드·프론트엔드 애플리케이션 코드.
   - `.gitignore`에 등록된 `/docs` 폴더 아래로 정본 저장소의 색인·요약본·계약서·정본을 로컬 동기화(`scripts/sync-spec.sh`)해 참조.
   - 개발 중 발견된 미정의 예외 케이스는 gitignore된 로컬 `/docs`에 쓰는 것이 아니라, GitHub CLI(`gh issue create --repo <org>/spec-repo`)를 통해 원격 `spec-repo`의 GitHub Issue로 직접 발의한다.
