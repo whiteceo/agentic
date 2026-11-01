@@ -18,7 +18,19 @@ description: 도메인 담당자가 정책이나 요구사항 변경을 말로 �
 3. 결정 배경은 PR 본문에 적는다.
 
 ## 3. 작업 지시서
-1. `scripts/new-id.sh`로 id를 받아 `docs/changes/<도메인 폴더>/TASK-<도메인>-YYYYMMDD-<hash>.md`를 만든다(frontmatter는 설치서 5-1).
+1. `scripts/new-id.sh`로 id를 받아 `docs/changes/<도메인 폴더>/TASK-<도메인>-YYYYMMDD-<hash>.md`를 만든다. frontmatter:
+   ```yaml
+   ---
+   id: TASK-SETT-20261101-b1c8e
+   domain: SETT
+   ui_change: no            # yes면 디자이너 시안 확정 후 구현
+   status: OPEN             # OPEN | DONE
+   assignee: [<github-id>]  # 비어 있으면 도메인 담당자가 백로그에서 배정
+   screen_ids: [ADMN-SETT-005]
+   pol_ids: [POL-SETT-001]
+   created_at: 2026-11-01
+   ---
+   ```
 2. 담당자를 물어 `assignee`에 적는다. 모르면 비워 두고 "담당자 미정, 백로그에서 배정 필요"라고 보고한다.
 3. PR 본문에 담당자를 `@계정`으로 적어 알림이 가게 한다.
 

@@ -11,7 +11,7 @@
 | :---: | :--- | :--- | :--- |
 | **1** | GitHub 준비: 요금제 확인(비공개 저장소에서 필수 체크 · 저장소 규칙을 쓸 수 있는지), spec-repo · app-repo 생성, 팀(도메인 담당자 · FE 리드 · BE 리드), 권한(아래), CI 토큰 발급과 Secrets 등록(3절) | 사람 | 두 저장소 존재, `gh secret list`에 토큰 이름 |
 | **2** | 설정 파일: 2절 질문에 답해 `spec-repo/agentic-env.yaml` 작성 | 세팅 담당 + 도메인 담당자 대표 | 필수 항목이 비어 있지 않음 |
-| **3** | spec-repo 골격: `docs/specs/`(빈 `_registry.yaml`), `docs/digest/`, `docs/changes/<도메인>/`, `contracts/`, `AGENTS.md`(= 핵심규약 원문), `.github/CODEOWNERS`, `.github/domain-assignees.json`, `.github/ISSUE_TEMPLATE/question.yml`, 라벨, `assign-issue` 워크플로, `scripts/new-id.sh`, `.claude/skills/`에 `doc-init` · `doc-rule` · `doc-update`, 선택 부록을 하나라도 켰으면 루트에 `AI_에이전틱_선택_부록.md` | AI → 세팅 담당 리뷰 | 개발자 계정으로 `gh issue create --label` 테스트 Issue 1건을 올려 라벨이 붙고 담당자가 자동 지정됨 |
+| **3** | spec-repo 골격: `docs/specs/`(빈 `_registry.yaml`), `docs/digest/`, `docs/changes/<도메인>/`, `contracts/`(빈 폴더에는 `.gitkeep`), `AGENTS.md`(= 핵심규약 원문), `.github/CODEOWNERS`, `.github/domain-assignees.json`, `.github/ISSUE_TEMPLATE/question.yml`, 라벨, `assign-issue` 워크플로, `scripts/new-id.sh`, `.claude/skills/`에 `doc-init` · `doc-rule` · `doc-update`, 선택 부록을 하나라도 켰으면 루트에 `AI_에이전틱_선택_부록.md` | AI → 세팅 담당 리뷰 | 개발자 계정으로 `gh issue create --label` 테스트 Issue 1건을 올려 라벨이 붙고 담당자가 자동 지정됨 |
 | **4** | app-repo 골격: `spec.lock`, `scripts/sync-spec.sh`, `scripts/check.sh`, `.gitignore`에 `/docs`, `AGENTS.md`, `check` 워크플로, `.claude/skills/`에 `dev-screen` · `spec-check` | AI → 세팅 담당 리뷰 | `sync-spec.sh`가 정본과 로컬 색인 2개를 만듦, 빈 프로젝트에서 `check` 통과 |
 | **5** | 정본 만들기: `/doc-init` (기획서가 있으면 정본화, 운영 코드만 있으면 역공학, 아무것도 없으면 인터뷰) | 도메인 담당자 | 정본 v1.0.0 PR 병합 |
 | **6** | 계약 만들기: `/doc-rule`로 `contracts/openapi.yaml` · `docs/contracts/00_ui_system.md` | FE · BE 리드 | 계약 PR 병합 |
@@ -19,8 +19,8 @@
 | **8** | 시범 1건: `/doc-update` → `/dev-screen` → `/spec-check` → 병합 → 릴리스. 끝나면 `agentic-env.yaml`의 `setup_done: true` | 전원 | 가이드 "사례로 따라가기"가 재현됨 |
 
 - 5 · 6단계의 디자인 준비(토큰 · 컴포넌트 매핑)는 팀이 원할 때 선택 부록 1절을 따른다. 설치 순서를 막지 않는다.
-- **권한**: spec-repo는 팀 전원(도메인 담당 · 디자인 · 개발) 쓰기, 그 밖의 파트(마케팅 · 운영 · CS)는 Triage. 쓰기나 Triage가 없으면 Issue의 라벨 · 담당자가 오류 없이 빠져 `assign-issue`가 돌지 않는다(신뢰 3·학습 지식). 정본 · 계약은 CODEOWNERS와 코드 소유자 리뷰 필수로 지키므로 쓰기 권한을 넓혀도 정본은 담당자 승인 없이 바뀌지 않는다.
-- **정본 승인자가 1명뿐이면**(PO/PM 대행 포함) spec-repo main의 필수 승인 수를 0으로 두고 코드 소유자 리뷰 필수도 끈 채 본인이 병합한다. GitHub는 작성자가 자기 PR을 승인하지 못하게 하기 때문이다(신뢰 3·학습 지식). 승인자가 둘 이상이 되면 승인 1과 코드 소유자 리뷰 필수를 켠다.
+- **권한**: spec-repo는 팀 전원(도메인 담당 · 디자인 · 개발) 쓰기, 그 밖의 파트(마케팅 · 운영 · CS)는 Triage. 쓰기나 Triage가 없으면 Issue의 라벨 · 담당자가 오류 없이 빠져 `assign-issue`가 돌지 않는다(신뢰 3·학습 지식). 정본 · 계약은 CODEOWNERS와 코드 소유자 리뷰 필수로 지키므로 쓰기 권한을 넓혀도 정본은 담당자 승인 없이 바뀌지 않는다(아래 승인자 1명 예외에서는 이 보호가 없다).
+- **정본 승인자가 1명뿐이면**(PO/PM 대행 포함) spec-repo main의 필수 승인 수를 0으로 두고 코드 소유자 리뷰 필수도 끈 채 본인이 병합한다. GitHub는 작성자가 자기 PR을 승인하지 못하게 하기 때문이다(신뢰 3·학습 지식). 이 동안에는 쓰기 권한이 있는 누구나 정본 PR을 병합할 수 있으므로, 정본 PR은 담당자만 병합한다는 약속을 팀에 알린다. 승인자가 둘 이상이 되면 승인 1과 코드 소유자 리뷰 필수를 켠다.
 - 테크리드가 없으면 저장소 관리 권한이 있는 사람이 세팅 담당을 맡는다. 그 전까지 도메인 담당자는 `/doc-init` 인터뷰 답을 로컬 초안으로 모아 둘 수 있다.
 
 ## 2. 설정 질문 (`agentic-env.yaml`)
@@ -72,7 +72,7 @@ setup_done: false
 
 | 워크플로 | 저장소 · 트리거 | 하는 일 |
 | :--- | :--- | :--- |
-| `assign-issue.yml` | spec-repo · `issues: opened, labeled` | `domain:` 라벨과 `domain-assignees.json`으로 담당자 지정. 권한 `issues: write`. 최소본은 5-7 |
+| `assign-issue.yml` | spec-repo · `issues: opened, labeled` | `domain:` 라벨과 `domain-assignees.json`으로 담당자 지정. 권한 `issues: write` + `contents: read`(담당자 파일을 읽기 위해). 최소본은 5-7 |
 | `check.yml` | app-repo · `pull_request`, `push: main` | `spec.lock` 정본을 받아 `scripts/check.sh` 실행. 권한 `contents: read` + CI 토큰. 최소본은 5-8 |
 
 그 밖의 자동화(색인 커밋 · 질문 아카이브 · 상태 자동 전환 · 기한 알림)는 두지 않는다. 색인은 `sync-spec.sh`가 로컬에서 만들고, 질문 기록은 Issue 자체이며, 진행 관리는 도메인 담당자의 백로그와 주간 회의가 맡는다.
@@ -82,8 +82,8 @@ setup_done: false
 | 스크립트 | 하는 일 |
 | :--- | :--- |
 | `scripts/new-id.sh` (spec-repo) | TASK 해시(5자) 생성 |
-| `scripts/sync-spec.sh` (app-repo) | `spec.lock`의 커밋으로 정본 · 계약 · 요약본(· 설치된 선택 부록)을 `/docs`에 받고 `canon_index.md`(화면코드 → 정본 앵커 · Figma URL)를 만든다. `open_tasks.md`(`status: OPEN`인 TASK와 담당자)는 spec-repo main의 최신 `docs/changes/`로 만든다. 새 TASK가 `spec.lock`을 올리기 전에도 보이게 하기 위해서다 |
-| `scripts/check.sh` (app-repo) | 린트 · 테스트, `[BLOCKED` 0개, 코드 · 테스트의 POL 번호가 `_registry.yaml`에 있고 중복이 없음. `--release`면 `[ASSUMPTION` 0개도 확인 |
+| `scripts/sync-spec.sh` (app-repo) | `spec.lock`의 커밋으로 정본 · 계약 · 요약본(· 설치된 선택 부록)을 `/docs`에 받고 `canon_index.md`(화면코드 → 정본 앵커 · Figma URL)를 만든다. `open_tasks.md`(`status: OPEN`인 TASK와 담당자)는 spec-repo main의 최신 `docs/changes/`로 만든다. 새 TASK가 `spec.lock`을 올리기 전에도 보이게 하기 위해서다. 정본은 `gh`로 받는다(`gh repo clone` 또는 `gh auth setup-git` 뒤 git). CI 토큰은 `GH_TOKEN`으로만 넘어오고 git은 이 변수를 읽지 않기 때문이다. |
+| `scripts/check.sh` (app-repo) | 린트 · 테스트, `[BLOCKED` 0개, 코드 · 테스트에 나온 POL 번호가 모두 `_registry.yaml`에 있음, 대장에 같은 번호가 두 번 없음(YAML 파서는 중복 키를 조용히 합치므로 텍스트로 센다). `--release`면 `[ASSUMPTION` 0개도 확인. 검사 대상은 앱 코드 · 테스트 폴더뿐이다(`AGENTS.md` · `.claude/` · `docs/` · `scripts/`에는 규칙 설명으로 이 글자들이 들어 있다) |
 
 ## 5. 받아 둘 파일 형식
 
@@ -117,7 +117,7 @@ created_at: 2026-11-01
 
 - 열 순서는 고정이다. Figma URL이 없으면 `-`. 디자이너의 URL 등록 PR은 이 열만 바꾼다.
 
-**3. 질문 Issue 양식** (`.github/ISSUE_TEMPLATE/question.yml`): `domain`(필수) · `kind`(blocking · assumption · legacy) · `screen_id` · `pol_id` · `assumption`(가정 내용).
+**3. 질문 Issue 양식** (`.github/ISSUE_TEMPLATE/question.yml`): `screen_id` · `pol_id` · `assumption`(가정 내용). 양식에서 고른 값은 본문 글자가 될 뿐 라벨이 되지 않으므로 도메인 · 종류는 양식에 두지 않는다. 웹으로 올린 사람은 제출 뒤 `domain:` 라벨과 종류 라벨을 단다.
 
 **4. 번호 대장** (`docs/specs/_registry.yaml`)
 
@@ -140,8 +140,9 @@ name: assign-issue
 on:
   issues:
     types: [opened, labeled]   # 둘이 함께 와도 같은 담당자를 다시 지정할 뿐이다
-permissions:
+permissions:                   # 하나라도 적으면 적지 않은 권한은 none이 된다
   issues: write
+  contents: read               # 없으면 비공개 저장소에서 checkout이 실패한다
 jobs:
   assign:
     runs-on: ubuntu-latest

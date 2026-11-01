@@ -30,7 +30,7 @@ PO/PM 결정 → 정본 PR(POL-ID) → TASK 파일 → 구현(AI는 요약본만
 | 질문 ID | `Q-<도메인>-<Issue번호>` | spec-repo Issue를 먼저 만들고 받은 번호를 쓴다. AI가 번호를 지어내지 않는다 |
 | 작업 지시서 | `docs/changes/<도메인 폴더>/TASK-<도메인>-YYYYMMDD-<hash>.md` | 지시 1건 = 파일 1개. 해시는 `scripts/new-id.sh`가 만든다 |
 
-- **TASK frontmatter**: `id` · `domain` · `ui_change`(yes/no) · `status`(OPEN/DONE) · `assignee`(GitHub 계정들) · `screen_ids` · `pol_ids` · `created_at`. 형식은 설치서 5절.
+- **TASK frontmatter**: `id` · `domain` · `ui_change`(yes/no) · `status`(OPEN/DONE) · `assignee`(GitHub 계정들) · `screen_ids` · `pol_ids` · `created_at`. 형식 예시는 `/doc-update` 스킬 3절.
 - **정본 `[B]` 화면 명세 표**: 화면코드 · 화면명 · Figma URL · Ref POL · 화면 상태. 정책 본문은 `[C]`에 한 번만 쓰고, 제목 바로 위에 `<a id="pol-sett-005"></a>` 같은 고정 앵커를 둔다.
 - **색인은 커밋하지 않는다**: `canon_index.md`(화면 → 정본 절 · Figma URL)와 `open_tasks.md`(열린 TASK 목록)는 `scripts/sync-spec.sh`가 정본을 받을 때 로컬 `/docs`에 만든다. `open_tasks.md`만은 `spec.lock`이 아니라 spec-repo main의 최신 TASK로 만든다. 그래야 새 지시서가 정본 버전을 올리기 전에도 보인다. 여러 사람이 같은 색인 파일을 고쳐 충돌하는 일을 없애기 위해서다.
 - **정본 버전 고정**: app-repo의 `spec.lock`에 기준 spec-repo 커밋을 적고, `sync-spec.sh`와 CI는 그 버전만 받는다. 정본을 올릴 때는 `spec.lock`만 바꾸는 PR(`chore: bump spec`)을 따로 연다.
@@ -47,7 +47,7 @@ PO/PM 결정 → 정본 PR(POL-ID) → TASK 파일 → 구현(AI는 요약본만
 
 | 관문 | 무엇을 | 운영 |
 | :--- | :--- | :--- |
-| `check` (CI 필수 체크) | 린트 · 테스트, `[BLOCKED` 0개, POL 번호 중복 · 미예약 0개 | 같은 입력이면 같은 결과가 나오는 검사만 둔다 |
+| `check` (CI 필수 체크) | 린트 · 테스트, `[BLOCKED` 0개, 코드의 POL 번호가 모두 대장에 있음, 대장 번호 중복 0개 | 같은 입력이면 같은 결과가 나오는 검사만 둔다 |
 | `check --release` (배포 작업 첫 단계) | `[ASSUMPTION` 0개 | 막히면 정리 PR을 병합한 뒤 새 커밋으로 배포를 새로 시작한다(태그 방식이면 새 태그). 실패한 실행을 다시 돌리면 같은 커밋을 다시 검사하므로 통과하지 않는다 |
 | `/spec-check` 리포트 | 정본 · 계약 · 시안과 코드 대조, 5등급 판정 | AI 판정은 실행마다 다를 수 있어 PR 코멘트로만 남기고, **병합은 리뷰어가 정한다** |
 
