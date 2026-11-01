@@ -129,3 +129,15 @@
 - HTML에만 남아 있던 "마스터 정책서" 표기를 명세서 용어 "도메인별 정본(PRD)"으로 통일(2곳).
 - Code SSOT 설명에 기계 정본 `contracts/openapi.yaml`을 병기하고 `00_domain_contracts.md`는 해설서로 표기(2곳). 용어 사전 추적 ID 설명의 "고유" ➔ "영구"(명세서 0절과 일치).
 - 저장소 분리로 깨지는 상대 경로 없음 확인(MD 다운로드 · 질문지 다운로드 · 표지 이미지 모두 저장소 최상위 기준).
+
+### 1.10 설계 검토 반영 (정책 판단이 필요 없는 항목, 2026-11-01)
+
+Claude Code 설계 검토 21건 중 정책 판단이 필요한 2건(비차단 ASSUMPTION 차단 시점, 핫픽스 기한 초과 시 벌칙)과 HTML 용어 사전 축소(P3)를 뺀 18건을 반영했다.
+
+1. **게이트 2층 원칙**(1.2): CI 필수 체크는 결정론적 검사만 두고, `/spec-check` 판정은 PR 코멘트 리포트 + 리뷰어 판단으로 분리. 3.5 표 · 핫픽스 `--hotfix` · 4절 2번 문구를 이에 맞춤.
+2. **Q-ID를 Issue 번호 기반으로**: `Q-<도메인>-<Issue번호>`(예: `Q-SETT-142`), CI는 번호로 직접 조회(제목 대조 폐지). 발의 실패 시 `Q-PENDING` 표기 후 CI 차단. TASK 해시는 `scripts/new-id.sh`가 생성.
+3. **정본 버전 고정**: app-repo `spec.lock`(spec-repo 커밋 SHA), 정본 갱신은 별도 PR.
+4. **인덱스 생성 주체**: `LATEST_TASK.md` · `canon_index.md`는 spec-repo main 머지 후 GitHub Actions가 생성(사람 · AI PR에 포함 금지), 색인 위치는 줄 번호 대신 제목 앵커. TASK `DONE` 전환과 질문 아카이브 파일도 Actions 담당.
+5. **번호 대장**: `docs/specs/_registry.yaml`에 POL · ADR 번호 예약 + CI 중복 검사. AI는 번호를 제안만 한다.
+6. **그 밖**: FE · BE 상호 승인 체크의 구현 부담과 수동 시작안, 계약 필드 변경 승인 범위(POL 필드 = PO/PM), 변경 등급은 PO/PM 확정 + `[B]` 변경 시 L1 승격, Track A 골격 밖 화면의 탈출 경로, Blocking 대기 중 스텁(`[BLOCKED: Q-ID]`) 처리, 정답 채널 단일화, Issue 본문 보안 규칙, L3 선언 주체(ENV-47), 레거시 질문 상한(ENV-48), Figma 도구명 일반화 · Code Connect 대안, 절대 표현 · 근거 없는 수치 정리, "HTML과 다르면 MD가 맞다" 원칙.
+7. **질문지**: ENV-05 · 14 · 39 · 40 · 46 갱신, ENV-47 · 48 추가(총 48개).

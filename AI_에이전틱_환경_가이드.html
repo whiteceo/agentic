@@ -1170,7 +1170,7 @@
               <text x="20" y="58" fill="var(--svg-text)" font-size="15.5" font-weight="800">정본 ↔ 코드 자동 대조</text>
               <text x="20" y="88" fill="var(--svg-sub)" font-size="11.5">• 정본 수식·필드·Figma 대조</text>
               <text x="20" y="110" fill="var(--svg-sub)" font-size="11.5">• check.sh 병렬 테스트 실행</text>
-              <text x="20" y="132" fill="var(--svg-sub)" font-size="11.5">• ✅ 일치 시에만 PR 병합 허용</text>
+              <text x="20" y="132" fill="var(--svg-sub)" font-size="11.5">• CI 통과 + AI 리포트 확인 후 병합</text>
               <rect x="20" y="160" width="202" height="38" rx="8" fill="rgba(245,158,11,0.16)" />
               <text x="121" y="184" text-anchor="middle" fill="#FDE68A" font-size="11.5" font-weight="800">/spec-check · CI Gate</text>
             </g>
@@ -1296,7 +1296,7 @@
             <span class="slide-step">SECTION 04 · TOKEN &amp; CONTEXT EFFICIENCY</span>
             <h2 class="slide-title">토큰 94% 절감 — 필요한 화면 요약본(Digest)만 선택 로드</h2>
           </div>
-          <p class="slide-sub">전체 정본을 통째로 읽히는 대신, 작업할 화면 1개에 필요한 6% 핵심 요약본만 읽혀 비용과 정확도를 모두 잡습니다.</p>
+          <p class="slide-sub">전체 정본을 통째로 읽히는 대신, 작업할 화면 1개에 필요한 6% 핵심 요약본만 읽혀 비용과 정확도를 모두 잡습니다. (토큰 수치는 예시이며, 6%는 기존 프로젝트에서 요약본이 원본의 약 6%였던 실측입니다.)</p>
         </div>
 
         <div class="diagram-frame reveal" style="--stagger:1;">
@@ -1390,7 +1390,7 @@
 
         <div class="grid-2 reveal" style="--stagger:2;">
           <div class="compact-card">
-            <h3><span class="tag tag-indigo">Track A 효과</span> 어드민 화면 통일성 100% 보장</h3>
+            <h3><span class="tag tag-indigo">Track A 효과</span> 어드민 화면 통일성 유지</h3>
             <p>여러 개발자가 병렬로 작업해도 동일한 4종 표준 UI 템플릿을 사용하므로 레이아웃 파편화가 발생하지 않습니다.</p>
           </div>
           <div class="compact-card">
@@ -1576,7 +1576,7 @@
               <text x="20" y="118" fill="var(--svg-sub)" font-size="12">2. /doc-rule로 도메인·API Mock·표준 UI 계약 수립</text>
               <text x="20" y="140" fill="var(--svg-sub)" font-size="12">3. Track A/B 기준 확정 후 /dev-screen 착수</text>
               <rect x="20" y="160" width="312" height="36" rx="8" fill="rgba(99,102,241,0.12)" />
-              <text x="176" y="183" text-anchor="middle" fill="#A5B4FC" font-size="11.5" font-weight="800">핵심: 첫 코드부터 정본 100% 일치 상태로 출발</text>
+              <text x="176" y="183" text-anchor="middle" fill="#A5B4FC" font-size="11.5" font-weight="800">핵심: 첫 코드부터 정본과 일치한 상태로 출발</text>
             </g>
 
             <!-- Type B -->
@@ -1741,7 +1741,7 @@
             <tr>
               <td><strong>Digest</strong><br><span style="font-size:11px;color:var(--text-muted);">Screen Digest</span></td>
               <td><strong>화면별 1장 요약본</strong></td>
-              <td>전체 정본 중 특정 화면 코드 1개 구현에 필요한 필드·상태·모달·수식만 1~2장으로 자동 추출한 AI용 요약 카드(토큰 94% 절감).</td>
+              <td>전체 정본 중 특정 화면 코드 1개 구현에 필요한 필드·상태·모달·수식만 1~2장으로 자동 추출한 AI용 요약 카드(전체 정본 대신 읽어 토큰 절감).</td>
             </tr>
           </tbody>
         </table>

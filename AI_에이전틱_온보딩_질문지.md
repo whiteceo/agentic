@@ -29,7 +29,7 @@
 | ENV-02 | `SPEC_REPO` | 정본 저장소 이름은 무엇인가? | `spec-repo` (예: `example-spec`) | 필수 | 리드 PO/PM | 1.2 |
 | ENV-03 | `APP_REPOS` | 개발 저장소는 몇 개이며 이름은 무엇인가? (FE · BE 분리 여부 포함) | `app-repo` 1개 (예: `example-app`) | 필수 | 테크리드 | 1.2 |
 | ENV-04 | `MAIN_BRANCH` | 병합 차단 게이트를 걸 기준 브랜치는 무엇인가? (`main` / `develop` / 릴리스 브랜치) | `main` | 권장 | 테크리드 | 1.2.1-1, 1.4-(2), 1.4-(4) |
-| ENV-05 | `SPEC_SYNC_METHOD` | app-repo가 정본을 받는 방식은? (스크립트 복사 / git submodule / 패키지) | `scripts/sync-spec.sh`로 `.gitignore`된 `/docs`에 복사 | 권장 | 테크리드 | 1.2, 3.4 Step 1 |
+| ENV-05 | `SPEC_SYNC_METHOD` | app-repo가 정본을 받는 방식은? (스크립트 복사 / git submodule / 패키지) | `scripts/sync-spec.sh`로 `.gitignore`된 `/docs`에 복사, 기준 커밋은 `spec.lock`으로 고정 | 권장 | 테크리드 | 1.2, 3.4 Step 1 |
 | ENV-06 | `CROSS_REPO_AUTH` | app-repo CI가 spec-repo Issue를 읽을 권한은 무엇으로 줄 것인가? (GitHub App / 읽기 전용 PAT) · Secrets 이름은? | 미정 (기본 `GITHUB_TOKEN`은 다른 저장소 Issue를 못 읽을 수 있어 별도 권한 필요) | 필수 | 테크리드 · 보안 담당 | 1.2 (CI), 검토로그 1.5-(2) |
 
 ## 2. 도메인 · 담당자 매핑
@@ -48,7 +48,7 @@
 | :--- | :--- | :--- | :--- | :---: | :--- | :--- |
 | ENV-12 | `SCREEN_CODE_PREFIX` | 화면 코드 접두어는? (백오피스 / 유저 프론트 / 앱 등 추가 채널) | `ADMN-<도메인>-<NNN>`, `USER-<도메인>-<NNN>` | 권장 | 리드 PO/PM | 1.3, 3.1 |
 | ENV-13 | `POL_ID_FORMAT` | 정책 ID 형식과 번호 자릿수는? | `POL-<도메인>-<3자리>` | 권장 | 리드 PO/PM | 1.2.2 |
-| ENV-14 | `SHORT_HASH_LEN` | Q-ID · TASK ID의 단축 해시 길이는? (4~6자 중 고정값 하나 권장) | SHA-256 앞 4~6자 | 권장 | 테크리드 | 1.4-(1), 1.4-(2) 1 |
+| ENV-14 | `SHORT_HASH_LEN` | TASK ID의 단축 해시 길이는? (`scripts/new-id.sh`가 생성. Q-ID는 Issue 번호를 쓰므로 해당 없음) | 5자 | 권장 | 테크리드 | 1.4-(1) |
 | ENV-15 | `COMMIT_MSG_FORMAT` | 커밋 메시지 형식은? (Conventional Commits 여부, `Ref: POL-*` 위치) | `feat(<도메인>): <요약> (<화면코드> · Ref: POL-*)` | 권장 | 테크리드 | 1.2.2-1, 3.4 Step 4 |
 
 ## 4. 질문 Issue 체계 · 알림
@@ -93,8 +93,8 @@
 | ENV-36 | `UI_TRACKS` | 화면별 트랙 배정 기준은? (백오피스 = Track A, 유저 프론트 = Track B 외 예외) | `ADMN-*` = Track A, `USER-*` = Track B | 권장 | 리드 PO/PM · UIX 리드 | 1.3 |
 | ENV-37 | `ARCHETYPES` | Track A 표준 화면 골격 종류는? (추가 · 제외) | `List-Modal`, `Detail-Form`, `Stats-Dashboard`, `Tabs-Complex` | 권장 | FE 리드 | 1.3, 3.2 |
 | ENV-38 | `SCREEN_STATES` | 화면 상태 매트릭스의 기본 상태와 도메인별 추가 상태는? | 기본 5종(정상 · 로딩 · 빈 화면 · 오류 · 권한 없음) + 정산 · 주문은 부분 실패 · 처리 중 | 권장 | UIX 리드 · 리드 PO/PM | 1.3 |
-| ENV-39 | `FIGMA_FILES` · `FIGMA_MCP` | Figma 팀 · 파일 위치, Figma MCP 서버 종류와 접근 권한(좌석 · 토큰)은? | Figma MCP (`get_node`) | 필수(Track B) | UIX 리드 · 테크리드 | 1.2.2-2, 1.3, 3.4 |
-| ENV-40 | `CODE_CONNECT` | Figma Code Connect를 쓰는가? 대상 컴포넌트 라이브러리 경로는? | 사용 (경로 미정) | 권장(Track B) | FE 리드 · UIX 리드 | 1.3 |
+| ENV-39 | `FIGMA_FILES` · `FIGMA_MCP` | Figma 팀 · 파일 위치, Figma MCP 서버 종류와 접근 권한(좌석 · 토큰)은? | Figma MCP 서버 (노드 조회 도구) | 필수(Track B) | UIX 리드 · 테크리드 | 1.2.2-2, 1.3, 3.4 |
+| ENV-40 | `CODE_CONNECT` | Figma Code Connect를 쓰는가(요금제 확인)? 대상 컴포넌트 라이브러리 경로는? | 사용 (경로 미정). 못 쓰면 `00_ui_system.md` 컴포넌트 매핑표 | 권장(Track B) | FE 리드 · UIX 리드 | 1.3 |
 | ENV-41 | `TOKEN_STANDARD` | 디자인 토큰 표준 · 버전과 빌드 도구는? 토큰 원본은 어디인가? | W3C DTCG (2025.10), Figma Variables 원본 · 코드용 자동 빌드 | 권장 | UIX 리드 · FE 리드 | 1.3 |
 | ENV-42 | `READY_FOR_DEV_LINT` | `Ready for Dev` 전환 기준은? (미바인딩 값 · Detach 인스턴스 허용 개수, 검사 도구) | 미바인딩 값 0개 · Detach 0개 | 권장 | UIX 리드 | 1.3, 3.2 |
 
@@ -105,7 +105,9 @@
 | ENV-43 | `AGENT_TOOLS` | 팀이 쓰는 코딩 에이전트와 스킬 설치 경로는? | Claude Code · 안티그래비티, `.claude/skills/<스킬명>/SKILL.md` | 권장 | 테크리드 | 3 (머리말) |
 | ENV-44 | `CHANNEL_MODE` | 작업 지시 · 피드백 채널은? (Core Git만 / Option A 사내 플랫폼 API / Option B Google Workspace) | Core (Git 내장 MD) | 권장 | 리드 PO/PM | 1.4-(5) |
 | ENV-45 | `PLATFORM_API` | Option A를 쓸 경우 API 주소 · 인증 방식 · `project-meta.json` 위치는? | 경량 API 3종(POST 등록 · GET 조회 · PATCH 상태), 주소 미정 | 선택 | 사내 플랫폼 담당 | 1.4-(5) |
-| ENV-46 | `CONTEXT_LOAD_RULE` | 화면 작업 때 AI가 읽는 범위는? (Digest만 / Digest + 색인 ±N줄) | Digest + `canon_index.md` 해당 구간 ±50줄 | 권장 | 테크리드 | 3.4 Step 1 |
+| ENV-46 | `CONTEXT_LOAD_RULE` | 화면 작업 때 AI가 읽는 범위는? (Digest만 / Digest + 색인이 가리키는 정본 절) | Digest + `canon_index.md` 앵커가 가리키는 정본 절 | 권장 | 테크리드 | 3.4 Step 1 |
+| ENV-47 | `INCIDENT_DECLARER` | Level 3(핫픽스) 진입을 선언할 수 있는 사람 · 역할은? 장애 등급 기준은? | 운영 책임자(온콜 · 테크리드) | 필수 | 테크리드 · 운영 책임자 | 1.4-(4) |
+| ENV-48 | `LEGACY_QUESTION_CAP` | 레거시 정본화(`/doc-init`) 1회에 도메인당 발의할 `legacy-question` 상한은? | 20건, 넘치면 묶음 Issue 1건 | 권장 | 리드 PO/PM | 3.1 |
 
 ---
 
@@ -135,7 +137,7 @@ teams:
 ids:
   screen_prefix: [ADMN, USER]        # ENV-12
   pol_digits: 3                      # ENV-13
-  short_hash_len: 5                  # ENV-14
+  task_hash_len: 5                   # ENV-14  scripts/new-id.sh
 questions:
   labels:                            # ENV-16
     domain: "domain:<도메인>"
@@ -167,6 +169,10 @@ design:
   ready_for_dev_lint: {unbound: 0, detached: 0}  # ENV-42
 channel:
   mode: core                         # ENV-44  core | platform-api | google-workspace
+incident:
+  declarers: [<github-id>]           # ENV-47
+legacy:
+  question_cap_per_domain: 20        # ENV-48
 ```
 
 ---
