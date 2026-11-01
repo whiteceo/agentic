@@ -4,598 +4,434 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI 에이전틱 시스템 구축 가이드 v1.3.0</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <style>
   :root {
-    --paper: #F5F2EA;
-    --panel: #FFFDF8;
-    --ink: #1C1B18;
-    --ink-2: #48453E;
-    --muted: #7A766C;
-    --rule: #DCD5C6;
-    --rule-2: #E9E3D6;
-    --root: #C2410C;
-    --root-bg: #FBE9DD;
-    --visual: #5B47C2;
-    --visual-bg: #ECE8FB;
-    --code: #0F766E;
-    --code-bg: #DDF2EE;
-    --warn: #A16207;
-    --warn-bg: #FBF0D6;
-    --bad: #B91C1C;
-    --bad-bg: #FBE3E1;
-    --ok: #15803D;
-    --ok-bg: #E1F3E6;
-    --shadow: 0 1px 0 rgba(28,27,24,.04), 0 8px 24px -12px rgba(28,27,24,.18);
-    --serif: "Noto Serif KR", "Pretendard", serif;
-    --sans: "Pretendard", -apple-system, "Segoe UI", sans-serif;
-    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #14130F; --panel: #1C1A16; --ink: #EEE9DE; --ink-2: #C9C3B6; --muted: #918B7E;
-      --rule: #34302A; --rule-2: #28251F;
-      --root: #F08A54; --root-bg: #3A2316; --visual: #A595F2; --visual-bg: #2A2442;
-      --code: #4FC7B6; --code-bg: #15302C; --warn: #E8B44C; --warn-bg: #3A2E14;
-      --bad: #F07A72; --bad-bg: #3B1D1B; --ok: #6CCB8A; --ok-bg: #18301F;
-      --shadow: 0 1px 0 rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6);
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --paper: #14130F; --panel: #1C1A16; --ink: #EEE9DE; --ink-2: #C9C3B6; --muted: #918B7E;
-    --rule: #34302A; --rule-2: #28251F;
-    --root: #F08A54; --root-bg: #3A2316; --visual: #A595F2; --visual-bg: #2A2442;
-    --code: #4FC7B6; --code-bg: #15302C; --warn: #E8B44C; --warn-bg: #3A2E14;
-    --bad: #F07A72; --bad-bg: #3B1D1B; --ok: #6CCB8A; --ok-bg: #18301F;
-    --shadow: 0 1px 0 rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6);
+    --bg: #08090B; --bg2: #0E1013; --bg3: #14171C;
+    --line: rgba(255,255,255,.08); --line2: rgba(255,255,255,.14);
+    --tx: #F2F3F5; --tx2: #A1A6B0; --tx3: #6B717C;
+    --a: #7C8CFF; --b: #3DD6B5; --c: #F5A35C; --d: #F06A8A; --y: #F2C94C;
+    --mono: ui-monospace, "SF Mono", Consolas, monospace;
     color-scheme: dark;
   }
-
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
-  body {
-    margin: 0; background: var(--paper); color: var(--ink);
-    font-family: var(--sans); font-size: 16px; line-height: 1.7;
-    -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: anywhere;
-  }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  body { margin: 0; background: var(--bg); color: var(--tx); font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: anywhere; line-height: 1.6; }
   a { color: inherit; }
-  code, .mono { font-family: var(--mono); font-size: .86em; }
-  code { background: var(--rule-2); padding: .1em .4em; border-radius: 4px; }
+  code { font-family: var(--mono); font-size: .85em; padding: 2px 7px; border-radius: 6px; background: rgba(255,255,255,.06); color: var(--tx2); }
 
-  /* ---------- layout ---------- */
-  .shell { display: grid; grid-template-columns: 236px minmax(0, 1fr); max-width: 1240px; margin: 0 auto; }
-  .toc {
-    position: sticky; top: 0; height: 100vh; padding: 40px 20px 32px 28px;
-    border-right: 1px solid var(--rule); display: flex; flex-direction: column; gap: 22px;
-  }
-  .brand { font-family: var(--serif); font-weight: 900; font-size: 19px; line-height: 1.3; letter-spacing: -.01em; }
-  .brand small { display: block; font-family: var(--mono); font-weight: 400; font-size: 11px; color: var(--muted); letter-spacing: .04em; margin-top: 6px; }
-  .toc ol { list-style: none; margin: 0; padding: 0; counter-reset: t; font-size: 14px; }
-  .toc li { counter-increment: t; }
-  .toc ol a {
-    display: flex; gap: 10px; padding: 6px 8px; margin: 0 -8px; border-radius: 6px;
-    text-decoration: none; color: var(--ink-2);
-  }
-  .toc ol a::before { content: counter(t, decimal-leading-zero); font-family: var(--mono); font-size: 11px; color: var(--muted); padding-top: 3px; }
-  .toc ol a:hover { background: var(--rule-2); color: var(--ink); }
-  .toc ol a.on { color: var(--root); font-weight: 600; }
-  .toc ol a.on::before { color: var(--root); }
-  .toc-foot { margin-top: auto; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px; justify-content: center;
-    padding: 9px 14px; border-radius: 8px; border: 1px solid var(--rule);
-    background: var(--panel); color: var(--ink); text-decoration: none; font-weight: 600; font-size: 13.5px; cursor: pointer;
-    font-family: var(--sans);
-  }
-  .btn:hover { border-color: var(--ink-2); }
-  .btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-  .btn.primary:hover { opacity: .9; }
+  /* nav */
+  .nav { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 40px; border-bottom: 1px solid var(--line); background: rgba(8,9,11,.78); backdrop-filter: blur(12px); }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: -.01em; text-decoration: none; white-space: nowrap; }
+  .logo i { width: 18px; height: 18px; border-radius: 5px; background: conic-gradient(from 200deg, var(--a), var(--b), var(--c), var(--a)); }
+  .nav-links { display: flex; align-items: center; gap: 22px; }
+  .nav-links a { color: var(--tx2); text-decoration: none; font-size: 14px; white-space: nowrap; }
+  .nav-links a:hover, .nav-links a.on { color: var(--tx); }
+  .nav .cta { color: var(--bg); background: var(--tx); padding: 7px 14px; border-radius: 8px; font-weight: 600; }
+  .nav .cta:hover { color: var(--bg); opacity: .9; }
 
-  main { padding: 0 56px 96px; min-width: 0; }
-  section { padding: 72px 0 8px; border-bottom: 1px solid var(--rule-2); }
-  section:last-of-type { border-bottom: 0; }
-  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
-  h1, h2, h3 { font-family: var(--serif); letter-spacing: -.015em; margin: 0; }
-  h2 { font-size: clamp(26px, 3vw, 34px); line-height: 1.3; margin: 10px 0 14px; }
-  h3 { font-size: 19px; line-height: 1.4; }
-  .lead { color: var(--ink-2); max-width: 720px; margin: 0 0 32px; font-size: 16.5px; }
-  p { margin: 0 0 12px; }
+  /* hero */
+  .hero { position: relative; padding: 120px 40px 96px; text-align: center; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .hero::before { content: ""; position: absolute; inset: -220px 0 auto; height: 760px; pointer-events: none;
+    background: radial-gradient(620px 300px at 50% 32%, rgba(124,140,255,.24), transparent 70%), radial-gradient(520px 260px at 72% 42%, rgba(61,214,181,.12), transparent 70%), radial-gradient(420px 220px at 26% 46%, rgba(245,163,92,.08), transparent 70%); }
+  .pill { position: relative; display: inline-flex; gap: 8px; align-items: center; padding: 6px 12px; border: 1px solid var(--line2); border-radius: 99px; font-size: 13px; color: var(--tx2); background: rgba(255,255,255,.03); }
+  .pill b { color: var(--b); font-weight: 600; }
+  h1 { position: relative; font-size: clamp(38px, 6vw, 72px); line-height: 1.1; letter-spacing: -.04em; font-weight: 800; margin: 24px auto 20px; max-width: 920px;
+    background: linear-gradient(180deg, #fff 30%, #9AA0AC); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { position: relative; font-size: 19px; line-height: 1.65; color: var(--tx2); max-width: 660px; margin: 0 auto 36px; }
+  .btns { position: relative; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none; color: var(--tx); border: 1px solid var(--line2); background: rgba(255,255,255,.02); }
+  .btn:hover { border-color: var(--tx3); }
+  .btn.p { background: var(--tx); color: var(--bg); border-color: var(--tx); }
+  .stats { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); max-width: 880px; margin: 72px auto 0; border: 1px solid var(--line); border-radius: 16px; background: var(--bg2); }
+  .stats div { padding: 22px; border-right: 1px solid var(--line); text-align: left; }
+  .stats div:last-child { border-right: 0; }
+  .stats b { display: block; font-size: 30px; letter-spacing: -.03em; }
+  .stats span { font-size: 13px; color: var(--tx3); }
 
-  /* ---------- hero ---------- */
-  .hero { padding: 88px 0 64px; border-bottom: 1px solid var(--rule); }
-  .hero h1 { font-size: clamp(34px, 5vw, 58px); line-height: 1.18; font-weight: 900; margin: 18px 0 22px; }
-  .hero h1 em { font-style: normal; color: var(--root); }
-  .hero .lead { font-size: 18px; max-width: 640px; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0 40px; }
-  .facts { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-top: 1px solid var(--ink); }
-  .fact { padding: 16px 16px 0 0; }
-  .fact b { display: block; font-family: var(--serif); font-size: 28px; font-weight: 900; line-height: 1.2; }
-  .fact span { font-size: 13.5px; color: var(--muted); }
-
-  /* ---------- cards & grids ---------- */
+  /* sections */
+  section { max-width: 1120px; margin: 0 auto; padding: 104px 40px 0; }
+  .kicker { font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+  h2 { font-size: clamp(28px, 3.4vw, 42px); letter-spacing: -.035em; line-height: 1.22; margin: 10px 0 14px; font-weight: 750; }
+  .lead { color: var(--tx2); font-size: 17px; line-height: 1.75; max-width: 680px; margin: 0 0 44px; }
+  h3 { margin: 0; letter-spacing: -.02em; }
+  .panel { position: relative; border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(180deg, var(--bg2), var(--bg)); padding: 36px; }
   .grid { display: grid; gap: 16px; }
   .g2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .g3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
   .g4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
-  .card { background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; padding: 22px 22px 18px; box-shadow: var(--shadow); }
-  .card h3 { margin-bottom: 8px; }
-  .card p, .card li { color: var(--ink-2); font-size: 15px; }
+  .card { border: 1px solid var(--line); border-radius: 16px; background: var(--bg2); padding: 22px; transition: border-color .2s; }
+  .card:hover { border-color: var(--line2); }
+  .card h3 { font-size: 18px; margin: 10px 0 8px; }
+  .card p, .card li { font-size: 14.5px; color: var(--tx2); line-height: 1.7; }
+  .card p { margin: 0; }
   .card ul { margin: 0; padding-left: 18px; }
-  .num { font-family: var(--mono); font-size: 12px; color: var(--muted); display: block; margin-bottom: 8px; }
-  .tag { display: inline-block; font-family: var(--mono); font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px; letter-spacing: .02em; }
-  .t-root { color: var(--root); background: var(--root-bg); }
-  .t-visual { color: var(--visual); background: var(--visual-bg); }
-  .t-code { color: var(--code); background: var(--code-bg); }
-  .t-warn { color: var(--warn); background: var(--warn-bg); }
-  .t-bad { color: var(--bad); background: var(--bad-bg); }
-  .t-ok { color: var(--ok); background: var(--ok-bg); }
-  .t-mute { color: var(--ink-2); background: var(--rule-2); }
+  .ico { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-size: 18px; background: var(--bg); border: 1px solid var(--line2); box-shadow: 0 8px 26px -10px currentColor; }
+  .lbl { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 99px; border: 1px solid currentColor; letter-spacing: .01em; }
+  .ca { color: var(--a); } .cb { color: var(--b); } .cc { color: var(--c); } .cd { color: var(--d); } .cy { color: var(--y); } .cm { color: var(--tx3); }
+  .note { margin-top: 20px; border: 1px solid var(--line); border-left: 2px solid var(--a); border-radius: 12px; padding: 16px 20px; font-size: 15px; color: var(--tx2); background: rgba(124,140,255,.04); }
+  .note b { color: var(--tx); }
 
-  /* ---------- SSOT hierarchy ---------- */
+  /* hierarchy */
   .tier { display: grid; gap: 0; }
-  .tier .node { border-radius: 12px; padding: 18px 20px; border: 1.5px solid; background: var(--panel); }
-  .node h3 { font-size: 18px; margin: 6px 0 6px; }
-  .node p { margin: 0; font-size: 14.5px; color: var(--ink-2); }
-  .node ul { margin: 8px 0 0; padding-left: 18px; font-size: 14px; color: var(--ink-2); }
-  .n-root { border-color: var(--root); }
-  .n-visual { border-color: var(--visual); }
-  .n-code { border-color: var(--code); }
-  .n-impl { border-color: var(--ink-2); border-style: dashed; text-align: center; }
-  .branch { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .connector { height: 28px; position: relative; }
-  .connector::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1.5px solid var(--muted); }
-  .connector.split::after { content: ""; position: absolute; left: 25%; right: 25%; bottom: 0; border-top: 1.5px solid var(--muted); }
-  .connector.split::before { bottom: 50%; }
-  .connector.split { height: 28px; }
-  .connector.split i { position: absolute; top: 100%; width: 0; height: 0; }
+  .node { border-radius: 16px; padding: 20px 22px; border: 1px solid; background: var(--bg); }
+  .node h3 { font-size: 18px; margin: 8px 0 6px; color: var(--tx); }
+  .node p { margin: 0; font-size: 14.5px; color: var(--tx2); }
+  .node ul { margin: 10px 0 0; padding-left: 18px; font-size: 14px; color: var(--tx2); }
+  .n-root { border-color: rgba(245,163,92,.45); box-shadow: 0 0 40px -18px var(--c); }
+  .n-vis { border-color: rgba(124,140,255,.45); box-shadow: 0 0 40px -18px var(--a); }
+  .n-code { border-color: rgba(61,214,181,.45); box-shadow: 0 0 40px -18px var(--b); }
+  .n-impl { border: 1px dashed var(--line2); text-align: center; }
+  .branch { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .conn { height: 34px; position: relative; }
+  .conn::before { content: ""; position: absolute; left: 50%; top: 0; height: 50%; width: 1px; background: var(--line2); }
+  .conn::after { content: ""; position: absolute; left: 25%; right: 25%; top: 50%; height: 50%; border: 1px solid var(--line2); border-bottom: 0; border-radius: 10px 10px 0 0; }
+  .conn.single::after { display: none; }
+  .conn.single::before { height: 100%; }
 
-  /* ---------- repos ---------- */
-  .repo h3 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .tree { font-family: var(--mono); font-size: 13px; line-height: 1.85; margin: 12px 0 0; padding: 0; list-style: none; }
-  .tree li { display: grid; grid-template-columns: minmax(190px, 52%) 1fr; gap: 12px; border-top: 1px dotted var(--rule); padding: 3px 0; }
-  .tree li span:last-child { font-family: var(--sans); font-size: 13.5px; color: var(--ink-2); }
-  .tree .new { color: var(--root); font-weight: 600; }
-  .bridge { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 16px 0 0; font-size: 14px; color: var(--ink-2); flex-wrap: wrap; text-align: center; }
-  .bridge .arrow { font-family: var(--mono); color: var(--muted); }
+  /* repos */
+  .tree { list-style: none; margin: 14px 0 0; padding: 0; font-size: 13.5px; }
+  .tree li { display: grid; grid-template-columns: minmax(180px, 50%) 1fr; gap: 12px; padding: 7px 0; border-top: 1px solid var(--line); }
+  .tree li span:first-child { font-family: var(--mono); font-size: 13px; color: var(--tx); }
+  .tree li span:last-child { color: var(--tx2); }
+  .tree .new span:first-child { color: var(--c); }
+  .bridge { margin-top: 18px; display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; font-size: 14px; color: var(--tx2); }
+  .bridge .line { flex: 0 0 80px; height: 1px; background: linear-gradient(90deg, var(--c), var(--b)); }
 
-  /* ---------- flow ---------- */
-  .flow { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; background: var(--panel); }
-  .step { padding: 20px 18px; border-right: 1px solid var(--rule); }
-  .step:last-child { border-right: 0; }
-  .step .who { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
-  .step h3 { font-size: 17px; margin: 6px 0 8px; }
-  .step ul { margin: 0; padding-left: 16px; font-size: 14px; color: var(--ink-2); }
-  .step .cmd { display: inline-block; margin-top: 10px; font-family: var(--mono); font-size: 12.5px; color: var(--root); }
-  .loop { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-  .loop .card { padding: 16px 18px; }
-  .loop b { font-family: var(--mono); font-size: 13px; }
+  /* flow */
+  .lanes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; position: relative; }
+  .lanes::before { content: ""; position: absolute; left: 12%; right: 12%; top: 44px; height: 2px; background: linear-gradient(90deg, var(--c), var(--a), var(--b), var(--d)); opacity: .55; }
+  .st { position: relative; text-align: center; }
+  .dot { width: 88px; height: 88px; margin: 0 auto 18px; border-radius: 22px; display: grid; place-items: center; font-size: 28px; background: var(--bg); border: 1px solid var(--line2); box-shadow: 0 0 0 6px var(--bg), 0 10px 40px -10px currentColor; }
+  .st .who { font-size: 12.5px; color: var(--tx3); margin-bottom: 4px; }
+  .st h3 { font-size: 18px; margin: 0 0 8px; color: var(--tx); }
+  .st p { font-size: 14px; color: var(--tx2); line-height: 1.65; margin: 12px 0 0; }
+  .back { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .back div { border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; background: rgba(255,255,255,.02); }
+  .back b { font-size: 15px; }
+  .back p { margin: 6px 0 0; font-size: 14px; color: var(--tx2); line-height: 1.65; }
+  .back .r { border-color: rgba(240,106,138,.35); }
+  .back .y { border-color: rgba(245,163,92,.35); }
 
-  /* ---------- tables ---------- */
-  .scroll-x { overflow-x: auto; border-radius: 12px; border: 1px solid var(--rule); }
-  .tbl { width: 100%; border-collapse: collapse; background: var(--panel); font-size: 14.5px; }
-  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--rule-2); }
-  .tbl th { font-size: 12.5px; font-weight: 600; color: var(--muted); background: var(--rule-2); letter-spacing: .02em; }
-  .tbl tr:last-child td { border-bottom: 0; }
-  .tbl td { color: var(--ink-2); }
-  .tbl td:first-child { font-weight: 600; white-space: nowrap; color: var(--ink); }
+  /* gate */
+  .gate { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .gate ul { list-style: none; padding: 0; margin: 14px 0 0; }
+  .gate li { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--tx2); }
+  .gate li .k { flex: none; min-width: 48px; font-size: 12px; font-weight: 600; }
+  .ok { color: var(--b); } .no { color: var(--d); }
+  .verdicts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 16px; }
+  .vd { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: var(--bg2); font-size: 13.5px; color: var(--tx2); line-height: 1.6; }
+  .vd .e { font-size: 20px; }
+  .vd b { display: block; color: var(--tx); font-size: 15px; margin: 6px 0 4px; }
+  .subh { font-size: 20px; margin: 48px 0 16px; letter-spacing: -.02em; }
 
-  /* ---------- gate ---------- */
-  .gate { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; background: var(--panel); }
-  .gate > div { padding: 18px; border-right: 1px solid var(--rule); }
-  .gate > div:last-child { border-right: 0; }
-  .gate h3 { font-size: 16px; margin: 8px 0 10px; }
-  .gate ul { list-style: none; margin: 0; padding: 0; font-size: 14px; }
-  .gate li { display: flex; gap: 8px; align-items: baseline; padding: 4px 0; color: var(--ink-2); }
-  .gate li .tag { flex: none; min-width: 52px; text-align: center; }
+  /* table */
+  .tbl-wrap { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; overflow-x: auto; background: var(--bg2); }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 640px; }
+  th, td { text-align: left; vertical-align: top; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+  th { font-size: 12.5px; font-weight: 600; color: var(--tx3); background: rgba(255,255,255,.02); }
+  tr:last-child td { border-bottom: 0; }
+  td { color: var(--tx2); line-height: 1.65; }
+  td:first-child { color: var(--tx); font-weight: 600; white-space: nowrap; }
+  td b { color: var(--tx); }
 
-  .callout { border-left: 3px solid var(--root); background: var(--panel); padding: 14px 18px; border-radius: 0 10px 10px 0; font-size: 15px; color: var(--ink-2); margin: 20px 0 0; }
-  .callout b { color: var(--ink); }
+  /* steps */
+  .steps { counter-reset: s; }
+  .steps .card { position: relative; padding-top: 26px; }
+  .steps .card::before { counter-increment: s; content: "0" counter(s); font-size: 13px; font-weight: 700; color: var(--a); }
 
-  /* ---------- verdicts ---------- */
-  .verdicts { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; }
-  .verdict { border-radius: 10px; padding: 14px; border: 1px solid var(--rule); background: var(--panel); font-size: 13.5px; color: var(--ink-2); }
-  .verdict b { display: block; font-size: 14.5px; color: var(--ink); margin: 6px 0 4px; }
+  /* glossary */
+  .gloss { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--bg2); }
+  .gloss div { padding: 20px 22px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .gloss div:nth-child(2n) { border-right: 0; }
+  .gloss div:nth-last-child(-n+2) { border-bottom: 0; }
+  .gloss b { font-size: 16px; }
+  .gloss small { margin-left: 8px; font-family: var(--mono); font-size: 12px; color: var(--tx3); }
+  .gloss p { margin: 6px 0 0; font-size: 14.5px; color: var(--tx2); line-height: 1.65; }
 
-  /* ---------- glossary ---------- */
-  dl.gloss { display: grid; grid-template-columns: minmax(160px, 220px) 1fr; margin: 0; border-top: 1px solid var(--ink); }
-  dl.gloss dt, dl.gloss dd { padding: 14px 0; border-bottom: 1px solid var(--rule); margin: 0; }
-  dl.gloss dt { font-weight: 700; padding-right: 16px; }
-  dl.gloss dt small { display: block; font-family: var(--mono); font-weight: 400; font-size: 11.5px; color: var(--muted); }
-  dl.gloss dd { color: var(--ink-2); font-size: 15px; }
+  footer { max-width: 1120px; margin: 104px auto 0; padding: 28px 40px 48px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13.5px; color: var(--tx3); }
+  footer a { color: var(--tx2); }
 
-  footer { padding: 40px 0 0; color: var(--muted); font-size: 13.5px; }
-
-  /* ---------- mobile ---------- */
-  .topbar { display: none; }
   @media (max-width: 960px) {
-    .shell { grid-template-columns: 1fr; }
-    .toc { display: none; }
-    .topbar {
-      display: flex; position: sticky; top: 0; z-index: 5; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 10px 16px; background: var(--paper); border-bottom: 1px solid var(--rule);
-    }
-    .topbar .brand { font-size: 15px; }
-    main { padding: 0 16px 72px; }
-    .g3, .g4, .flow, .gate, .verdicts { grid-template-columns: 1fr 1fr; }
-    .step:nth-child(2) { border-right: 0; }
-    .step:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
-    .gate > div { border-right: 0; border-bottom: 1px solid var(--rule); }
-    .facts { grid-template-columns: 1fr 1fr; }
+    .nav-links a:not(.cta) { display: none; }
+    .g3, .g4, .gate, .verdicts { grid-template-columns: 1fr 1fr; }
+    .lanes { grid-template-columns: 1fr 1fr; row-gap: 36px; }
+    .lanes::before { display: none; }
   }
-  @media (max-width: 600px) {
-    .g2, .g3, .g4, .flow, .gate, .verdicts, .loop, .branch { grid-template-columns: 1fr; }
-    .step { border-right: 0; border-bottom: 1px solid var(--rule); }
-    .step:last-child { border-bottom: 0; }
-    .connector.split::after { display: none; }
-    .connector.split::before { bottom: 0; }
-    section { padding-top: 52px; }
-    .hero { padding: 48px 0 40px; }
-    dl.gloss { grid-template-columns: 1fr; }
-    dl.gloss dt { border-bottom: 0; padding-bottom: 0; }
+  @media (max-width: 640px) {
+    .nav { padding: 12px 16px; }
+    .hero { padding: 72px 16px 64px; }
+    .sub { font-size: 17px; }
+    section { padding: 80px 16px 0; }
+    .panel { padding: 22px 16px; }
+    .stats { grid-template-columns: 1fr 1fr; margin-top: 48px; }
+    .stats div:nth-child(2) { border-right: 0; }
+    .stats div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .g2, .g3, .g4, .gate, .verdicts, .branch, .back, .lanes, .gloss { grid-template-columns: 1fr; }
+    .conn::after { display: none; }
+    .conn::before { height: 100%; }
+    .gloss div { border-right: 0; }
+    .gloss div:nth-last-child(2) { border-bottom: 1px solid var(--line); }
     .tree li { grid-template-columns: 1fr; gap: 0; }
-    .tbl td:first-child { white-space: normal; }
+    footer { padding: 24px 16px 40px; }
   }
-  @media print { .toc, .topbar { display: none; } .shell { display: block; } }
 </style>
 </head>
 <body>
-<div class="topbar">
-  <span class="brand">AI 에이전틱 시스템</span>
-  <span style="display:flex;gap:8px;">
-    <a class="btn" href="./AI_에이전틱_환경_구축.md" download>명세서 MD</a>
-    <button class="btn" type="button" data-theme-toggle aria-label="화면 테마 전환">◐</button>
-  </span>
-</div>
+<nav class="nav">
+  <a class="logo" href="#top"><i></i>Agentic System</a>
+  <div class="nav-links">
+    <a href="#ssot">정본</a><a href="#flow">작업 흐름</a><a href="#questions">질문 · 게이트</a><a href="#levels">변경 등급</a><a href="#skills">스킬</a><a href="#roadmap">도입</a>
+    <a class="cta" href="./AI_에이전틱_환경_구축.md" download>명세서 MD</a>
+  </div>
+</nav>
 
-<div class="shell">
-  <nav class="toc" aria-label="목차">
-    <div class="brand">AI 에이전틱 시스템<br>구축 가이드<small>v1.3.0 · 사람 브리핑용</small></div>
-    <ol>
-      <li><a href="#why">왜 필요한가</a></li>
-      <li><a href="#ssot">계층형 정본</a></li>
-      <li><a href="#repos">저장소 2개</a></li>
-      <li><a href="#flow">작업 흐름</a></li>
-      <li><a href="#questions">질문과 게이트</a></li>
-      <li><a href="#levels">변경 등급</a></li>
-      <li><a href="#tracks">화면 2-Track</a></li>
-      <li><a href="#skills">5대 스킬</a></li>
-      <li><a href="#roles">직군별 역할</a></li>
-      <li><a href="#roadmap">도입 순서</a></li>
-      <li><a href="#glossary">용어</a></li>
-    </ol>
-    <div class="toc-foot">
-      <a class="btn primary" href="./AI_에이전틱_환경_구축.md" download>AI용 명세서 MD</a>
-      <a class="btn" href="./AI_에이전틱_온보딩_질문지.md" download>온보딩 질문지</a>
-      <button class="btn" type="button" data-theme-toggle>◐ 화면 테마 전환</button>
+<header class="hero" id="top">
+  <span class="pill"><b>v1.3.0</b> 게이트 2층 · ASSUMPTION 2단계 · Issue 번호 Q-ID</span>
+  <h1>AI를 도구로 쓰는 팀에서<br>시스템으로 일하는 팀으로</h1>
+  <p class="sub">PO/PM · 디자이너 · 개발자가 각자 AI를 써도 하나의 정본에 맞물리게 하는 규약입니다. 사람은 정의하고 결정하고, 전달 · 대조 · 반복 검사는 스킬과 CI가 맡습니다.</p>
+  <div class="btns">
+    <a class="btn p" href="#flow">작업 흐름 보기</a>
+    <a class="btn" href="./AI_에이전틱_온보딩_질문지.md" download>온보딩 질문지</a>
+  </div>
+  <div class="stats">
+    <div><b>1</b><span>최상위 비즈니스 정본</span></div>
+    <div><b>5</b><span>표준 AI 스킬</span></div>
+    <div><b>2층</b><span>CI 체크 + AI 리포트</span></div>
+    <div><b>48</b><span>팀별 설정 항목</span></div>
+  </div>
+</header>
+
+<!-- 01 -->
+<section id="why">
+  <div class="kicker ca">01 · 왜 필요한가</div>
+  <h2>각자 AI를 쓰면 정본이 흩어집니다</h2>
+  <p class="lead">AI를 잘 쓰는 개인이 늘수록, 정본을 안 읽거나 빈틈을 AI가 추론해 채운 코드도 같이 늘어납니다. 이 규약은 네 가지 문제를 막습니다.</p>
+  <div class="grid g4">
+    <div class="card"><div class="ico cc">⇢</div><h3>정본 이탈</h3><p>AI가 빈틈을 임의로 추론해 정본과 다른 상태값 · 로직을 만듭니다.</p></div>
+    <div class="card"><div class="ico ca">⇄</div><h3>도메인 충돌</h3><p>여러 PO/PM과 FE/BE가 병렬로 일할 때 식별자 · 계산식 · API가 어긋납니다.</p></div>
+    <div class="card"><div class="ico cb">▦</div><h3>화면 파편화</h3><p>프로토타입을 손으로 관리하지 않으면서 화면 통일성을 지켜야 합니다.</p></div>
+    <div class="card"><div class="ico cd">◎</div><h3>수동 검수 병목</h3><p>사람이 눈으로 대조하기 전에 스킬과 CI가 먼저 걸러야 합니다.</p></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="ssot">
+  <div class="kicker cc">02 · 계층형 정본</div>
+  <h2>정본은 평면이 아니라 계층입니다</h2>
+  <p class="lead">비즈니스 정책이 최상위 원천이고, 디자인과 API 계약은 거기서 파생됩니다. 최상위 정본에 없는 상태값이나 로직은 디자인 · 코드에서 새로 만들 수 없습니다.</p>
+  <div class="panel">
+    <div class="tier">
+      <div class="node n-root"><span class="lbl cc">ROOT</span><h3>최상위 비즈니스 정본</h3><p>PO/PM이 작성 · 승인하는 정책서와 화면 요구사항 · <code>docs/specs/</code></p></div>
+      <div class="conn"></div>
+      <div class="branch">
+        <div class="node n-vis"><span class="lbl ca">VISUAL</span><h3>시각 정본</h3><p>UIX가 Figma로 확정한 시안과 디자인 시스템</p><ul><li>화면 상태 매트릭스 완비 (정상 · 로딩 · 빈 화면 · 오류 · 권한 없음 + 도메인 상태)</li><li>Semantic 토큰만, 미바인딩 값 0개</li></ul></div>
+        <div class="node n-code"><span class="lbl cb">CODE</span><h3>인터페이스 정본</h3><p>FE · BE가 기다리지 않고 병렬로 만들기 위한 API 계약</p><ul><li><code>contracts/openapi.yaml</code> + Mock</li><li>POL 필드 의미 변경은 PO/PM, 기술 필드는 FE · BE 리드 승인</li></ul></div>
+      </div>
+      <div class="conn single"></div>
+      <div class="node n-impl"><h3>실제 화면과 코드</h3><p>세 정본을 모두 지킨 구현만 병합합니다</p></div>
     </div>
-  </nav>
+  </div>
+  <div class="note"><b>정책 추적 ID</b> <code>POL-SETT-001</code> 하나를 정책서 · 색인 · API · 테스트 주석 · 커밋 메시지에 똑같이 남깁니다. 정책이 바뀌면 이 ID 검색 한 번으로 영향 범위가 나옵니다. 번호는 대장(<code>_registry.yaml</code>)에 예약해 쓰고, AI는 제안만 합니다.</div>
+</section>
 
-  <main>
-    <!-- ================= HERO ================= -->
-    <header class="hero">
-      <span class="eyebrow">AI Agent → Agentic System</span>
-      <h1>AI를 <em>도구</em>로 쓰나요,<br>시스템으로 쓰나요?</h1>
-      <p class="lead">각자 로컬에서 AI로 일하는 PO/PM · UIX 디자이너 · 개발자가 하나의 정본을 기준으로 맞물리게 하는 규약입니다. 사람은 정의와 결정을 하고, 전달 · 대조 · 반복 검사는 시스템이 맡습니다.</p>
-      <div class="hero-actions">
-        <a class="btn primary" href="#flow">작업 흐름 보기</a>
-        <a class="btn" href="./AI_에이전틱_환경_구축.md" download>AI용 명세서 MD</a>
-        <a class="btn" href="./AI_에이전틱_온보딩_질문지.md" download>온보딩 질문지</a>
-      </div>
-      <div class="facts">
-        <div class="fact"><b>1개</b><span>최상위 비즈니스 정본</span></div>
-        <div class="fact"><b>5개</b><span>표준 AI 스킬</span></div>
-        <div class="fact"><b>2층</b><span>CI 체크 + AI 리포트</span></div>
-        <div class="fact"><b>48개</b><span>팀별 설정 항목 (ENV)</span></div>
-      </div>
-    </header>
+<!-- 03 -->
+<section id="repos">
+  <div class="kicker cb">03 · 저장소 구조</div>
+  <h2>정본 저장소와 개발 저장소를 나눕니다</h2>
+  <p class="lead">기획 자산과 소스 코드를 섞지 않아 AI가 옛 초안을 참조하는 일을 막고, 승인 권한도 직군별로 나눕니다.</p>
+  <div class="grid g2">
+    <div class="card"><span class="lbl cc">spec-repo · PO/PM 승인</span>
+      <ul class="tree">
+        <li><span>docs/specs/</span><span>도메인별 정본 · 번호 대장</span></li>
+        <li><span>contracts/openapi.yaml</span><span>기계 검증 API 계약</span></li>
+        <li><span>docs/digest/</span><span>화면별 요약본 · 색인</span></li>
+        <li><span>docs/changes/</span><span>작업 지시서 · 인덱스</span></li>
+        <li><span>docs/questions/</span><span>종결된 질문 아카이브</span></li>
+        <li><span>docs/adr/</span><span>결정 기록</span></li>
+        <li><span>engine/</span><span>계산기 · 정답 시나리오</span></li>
+        <li class="new"><span>agentic-env.yaml</span><span>팀별 설정값 (질문지 답)</span></li>
+      </ul>
+    </div>
+    <div class="card"><span class="lbl cb">app-repo · 개발팀 승인</span>
+      <ul class="tree">
+        <li><span>src/</span><span>FE · BE 프로덕션 코드</span></li>
+        <li><span>tests/</span><span>단위 · 기능 · 계산기 검증</span></li>
+        <li class="new"><span>spec.lock</span><span>기준 정본 커밋 SHA</span></li>
+        <li><span>docs/ (.gitignore)</span><span>정본 로컬 사본</span></li>
+        <li><span>scripts/</span><span>sync-spec.sh · check.sh</span></li>
+        <li><span>.claude/skills/</span><span>/dev-screen · /spec-check</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="bridge"><code>sync-spec.sh</code><span class="line"></span><span>정본은 <code>spec.lock</code>에 적힌 버전만 받고, 정본 갱신은 별도 PR로 올립니다</span></div>
+</section>
 
-    <!-- ================= 01 WHY ================= -->
-    <section id="why">
-      <span class="eyebrow">01 · Why</span>
-      <h2>여러 사람이 각자 AI를 쓰면 정본이 흩어집니다</h2>
-      <p class="lead">AI를 잘 쓰는 개인이 늘수록, 정본을 안 읽거나 빈틈을 AI가 추론해 채운 코드도 함께 늘어납니다. 이 규약은 네 가지 문제를 막기 위해 만들었습니다.</p>
-      <div class="grid g2">
-        <div class="card"><span class="num">01</span><h3>정본 이탈</h3><p>AI가 빈틈을 임의로 추론해 정본과 다른 상태값 · 로직 · 코드를 만듭니다.</p></div>
-        <div class="card"><span class="num">02</span><h3>도메인 간 충돌</h3><p>여러 PO/PM과 FE/BE가 도메인을 나눠 병렬로 일할 때 식별자 · 계산식 · API 스키마가 어긋납니다.</p></div>
-        <div class="card"><span class="num">03</span><h3>화면 파편화</h3><p>정적 HTML 프로토타입을 손으로 관리하지 않으면서도 백오피스와 유저 화면의 통일성을 지켜야 합니다.</p></div>
-        <div class="card"><span class="num">04</span><h3>수동 검수 병목</h3><p>사람이 정본과 코드를 눈으로 대조하는 대신, 로컬 스킬과 중앙 CI가 먼저 걸러야 합니다.</p></div>
-      </div>
-    </section>
+<!-- 04 -->
+<section id="flow">
+  <div class="kicker ca">04 · 작업 흐름</div>
+  <h2>정의에서 병합까지, 네 단계</h2>
+  <p class="lead">아래로 흐르는 것은 작업 지시, 거꾸로 올라오는 것은 질문입니다. 둘 다 Git과 spec-repo Issue에 남아 메신저 답변이 정본을 대신하지 않습니다.</p>
+  <div class="panel">
+    <div class="lanes">
+      <div class="st cc"><div class="dot">✎</div><div class="who">PO / PM</div><h3>요구사항 정의</h3><code>/doc-update</code><p>영향 범위와 변경 등급을 받아 정본 · 계약을 고치고 작업 지시서를 냅니다.</p></div>
+      <div class="st ca"><div class="dot">◐</div><div class="who">UIX</div><h3>시안 확정</h3><code>Ready for Dev</code><p>상태 매트릭스를 채우고 정본에 Figma URL을 등록합니다.</p></div>
+      <div class="st cb"><div class="dot">{ }</div><div class="who">FE / BE</div><h3>화면 구현</h3><code>/dev-screen</code><p>지시서 · 화면 요약본 · Mock 계약만 읽고 병렬로 만듭니다.</p></div>
+      <div class="st cd"><div class="dot">✓</div><div class="who">CI + 리뷰어</div><h3>대조 · 병합</h3><code>/spec-check</code><p>CI가 결정론적 검사로 막고, AI 리포트는 리뷰어가 봅니다.</p></div>
+    </div>
+    <div class="back">
+      <div class="r"><b>↩ 코드 위반</b><p>계약 테스트 · 계산기 실패는 CI가 막고, 리포트의 위반은 리뷰어가 반려합니다.</p></div>
+      <div class="y"><b>↩ 정본 공백</b><p>질문 Issue로 올라가 PO/PM이 정본을 고친 뒤 <code>completed</code>로 닫습니다.</p></div>
+    </div>
+  </div>
+</section>
 
-    <!-- ================= 02 SSOT ================= -->
-    <section id="ssot">
-      <span class="eyebrow">02 · Hierarchical SSOT</span>
-      <h2>정본은 평면이 아니라 계층입니다</h2>
-      <p class="lead">기획의 비즈니스 정책이 최상위 원천이고, 디자인과 인터페이스 계약은 거기서 파생됩니다. 최상위 정본에 없는 상태값이나 로직은 디자인 · 코드에서 새로 만들 수 없습니다.</p>
-      <div class="tier">
-        <div class="node n-root">
-          <span class="tag t-root">ROOT</span>
-          <h3>최상위 비즈니스 정본 (Root Logic SSOT)</h3>
-          <p>PO/PM이 작성 · 승인하는 정책서와 화면 요구사항. <code>spec-repo/docs/specs/</code></p>
-        </div>
-        <div class="connector split"></div>
-        <div class="branch">
-          <div class="node n-visual">
-            <span class="tag t-visual">VISUAL</span>
-            <h3>시각 정본</h3>
-            <p>UIX 디자이너가 Figma로 확정한 시안과 디자인 시스템 (<code>Ready for Dev</code>)</p>
-            <ul><li>화면 상태 매트릭스(정상 · 로딩 · 빈 화면 · 오류 · 권한 없음 + 도메인 상태)</li><li>Semantic 토큰만 사용, 미바인딩 값 0개</li></ul>
-          </div>
-          <div class="node n-code">
-            <span class="tag t-code">CODE</span>
-            <h3>인터페이스 정본</h3>
-            <p>FE · BE가 기다리지 않고 병렬로 만들기 위해 먼저 확정하는 API 계약</p>
-            <ul><li><code>contracts/openapi.yaml</code> + Mock, 해설서 <code>00_domain_contracts.md</code></li><li>POL 필드 의미 변경은 PO/PM, 기술 필드는 FE · BE 리드 승인</li></ul>
-          </div>
-        </div>
-        <div class="connector"></div>
-        <div class="node n-impl"><h3 style="font-size:16px;">실제 화면과 코드</h3><p>정본 · 시안 · 계약을 모두 지킨 구현만 병합합니다</p></div>
-      </div>
-      <div class="callout"><b>정책 추적 ID <code>POL-SETT-001</code></b> 하나를 정책서 · 색인 · API description · 테스트 주석 · 커밋 메시지에 똑같이 남깁니다. 정책이 바뀌면 이 ID 검색 한 번으로 영향 범위가 나옵니다. 번호는 대장(<code>_registry.yaml</code>)에 예약해 쓰고, AI는 제안만 합니다.</div>
-    </section>
+<!-- 05 -->
+<section id="questions">
+  <div class="kicker cd">05 · 질문과 게이트</div>
+  <h2>멈출 질문과 진행할 질문을 나눕니다</h2>
+  <p class="lead">모든 질문에서 멈추면 병목이 되고, 아무 데서도 멈추지 않으면 정본이 흩어집니다. 질문은 GitHub Issue로 올리고 Issue 번호가 그대로 질문 ID가 됩니다(예: <code>Q-SETT-142</code>).</p>
+  <div class="grid g2">
+    <div class="card" style="border-color:rgba(240,106,138,.3)"><span class="lbl cd">BLOCKING</span><h3>금액 · 권한 · 상태 전이 · 개인정보 · PG</h3><p>해당 분기는 스텁(<code>[BLOCKED: Q-ID]</code>)으로 막고 같은 지시서의 다른 작업으로 넘어갑니다. 답이 오기 전에는 main에 병합하지 않습니다.</p></div>
+    <div class="card" style="border-color:rgba(242,201,76,.3)"><span class="lbl cy">ASSUMPTION</span><h3>문구 · 정렬 · 사소한 UI 분기</h3><p>가장 합리적인 가정으로 진행하고 <code>[ASSUMPTION: Q-ID]</code>를 남깁니다. Issue가 <code>completed</code>로 닫히기 전에는 릴리스하지 않습니다.</p></div>
+  </div>
 
-    <!-- ================= 03 REPOS ================= -->
-    <section id="repos">
-      <span class="eyebrow">03 · Two Repositories</span>
-      <h2>정본 저장소와 개발 저장소를 나눕니다</h2>
-      <p class="lead">기획 자산과 소스 코드를 섞지 않아 AI가 옛 초안을 참조하는 일을 막고, 승인 권한도 직군별로 나눕니다.</p>
-      <div class="grid g2">
-        <div class="card repo">
-          <h3>spec-repo <span class="tag t-root">PO/PM 승인</span></h3>
-          <ul class="tree">
-            <li><span>docs/specs/</span><span>도메인별 정본 · 번호 대장</span></li>
-            <li><span>contracts/openapi.yaml</span><span>기계 검증 API 계약</span></li>
-            <li><span>docs/digest/</span><span>화면별 요약본 · 색인</span></li>
-            <li><span>docs/changes/</span><span>도메인별 작업 지시서 · 인덱스</span></li>
-            <li><span>docs/questions/</span><span>종결된 질문 아카이브</span></li>
-            <li><span>docs/adr/</span><span>결정 기록</span></li>
-            <li><span>engine/</span><span>도메인 계산기 · 정답 시나리오</span></li>
-            <li><span class="new">agentic-env.yaml</span><span>팀별 설정값 (질문지 답)</span></li>
-          </ul>
-        </div>
-        <div class="card repo">
-          <h3>app-repo <span class="tag t-code">개발팀 승인</span></h3>
-          <ul class="tree">
-            <li><span>src/</span><span>FE · BE 프로덕션 코드</span></li>
-            <li><span>tests/</span><span>단위 · 기능 · 계산기 검증</span></li>
-            <li><span class="new">spec.lock</span><span>기준 정본 커밋 SHA</span></li>
-            <li><span>docs/ (.gitignore)</span><span>정본 로컬 사본</span></li>
-            <li><span>scripts/</span><span>sync-spec.sh · check.sh</span></li>
-            <li><span>.claude/skills/</span><span>/dev-screen · /spec-check</span></li>
-          </ul>
-        </div>
-      </div>
-      <div class="bridge">
-        <span class="tag t-mute">sync-spec.sh</span><span class="arrow">spec-repo → app-repo</span>
-        <span>정본은 <code>spec.lock</code>에 적힌 버전만 받습니다. 정본 갱신은 별도 PR로 올립니다.</span>
-      </div>
-    </section>
+  <h3 class="subh">게이트는 두 층, ASSUMPTION은 두 단계</h3>
+  <div class="gate">
+    <div class="card"><span class="lbl cb">1층 · CI 필수 체크</span><h3>결과가 늘 같은 검사만</h3>
+      <ul><li><span class="k">계약</span>OpenAPI 계약 테스트</li><li><span class="k">계산</span>도메인 계산기 정답 대조</li><li><span class="k">DB</span>임시 DB 테스트 · 코드 스타일</li><li><span class="k">질문</span>ASSUMPTION · BLOCKED 주석 상태</li></ul></div>
+    <div class="card"><span class="lbl ca">2층 · AI 리포트</span><h3>판단은 리뷰어가</h3>
+      <ul><li><span class="k">PR</span><code>/spec-check</code> 결과를 코멘트로</li><li><span class="k">이유</span>AI 판정은 실행마다 달라질 수 있음</li><li><span class="k">결정</span>리뷰어가 보고 반려 · 승인</li></ul></div>
+    <div class="card"><span class="lbl cy">ASSUMPTION 주석</span><h3>main은 열고, 릴리스는 닫는다</h3>
+      <ul><li><span class="k ok">main</span>미해결 · completed 허용</li><li><span class="k no">main</span>Issue 없음(<code>Q-PENDING</code>) 차단</li><li><span class="k ok">릴리스</span>completed만 허용</li><li><span class="k">정리</span>기각은 코드 제거, 중복은 원본 ID로</li></ul></div>
+  </div>
 
-    <!-- ================= 04 FLOW ================= -->
-    <section id="flow">
-      <span class="eyebrow">04 · Workflow</span>
-      <h2>정의 → 지시 → 구현 → 대조, 그리고 되돌아오는 질문</h2>
-      <p class="lead">아래로 흐르는 것은 작업 지시이고, 위로 올라오는 것은 질문입니다. 둘 다 Git과 spec-repo Issue에 남기 때문에 메신저 답변이 정본을 대신하지 않습니다.</p>
-      <div class="flow">
-        <div class="step"><span class="who">PO / PM</span><h3>요구사항 정의</h3><ul><li>영향 범위 · 변경 등급 제안 받기</li><li>정본 · 계산기 · API 계약 개정</li><li>도메인별 작업 지시서 발행</li></ul><span class="cmd">/doc-update</span></div>
-        <div class="step"><span class="who">UIX</span><h3>시안 확정</h3><ul><li>Figma 프레임에 화면 코드 표기</li><li>상태 매트릭스 완비</li><li>정본에 Figma URL 등록 PR</li></ul><span class="cmd">Ready for Dev</span></div>
-        <div class="step"><span class="who">FE / BE</span><h3>화면 구현</h3><ul><li>지시서 · 화면 요약본만 로드</li><li>Mock 계약으로 병렬 구현</li><li>빈틈은 질문 Issue로</li></ul><span class="cmd">/dev-screen</span></div>
-        <div class="step"><span class="who">CI + 리뷰어</span><h3>대조 · 병합</h3><ul><li>check.sh 필수 체크</li><li>AI 대조 리포트를 PR에</li><li>리뷰어가 보고 병합</li></ul><span class="cmd">/spec-check</span></div>
-      </div>
-      <div class="loop">
-        <div class="card"><b>코드 위반</b><p style="margin:6px 0 0;">계약 테스트 · 계산기 실패는 CI가 막고, 리포트의 위반은 리뷰어가 반려해 구현 단계로 돌려보냅니다.</p></div>
-        <div class="card"><b>정본 공백</b><p style="margin:6px 0 0;">spec-repo에 질문 Issue로 올라가 PO/PM이 정본을 고친 뒤 <code>completed</code>로 닫습니다.</p></div>
-      </div>
-    </section>
+  <h3 class="subh">/spec-check 판정 5종</h3>
+  <div class="verdicts">
+    <div class="vd"><span class="e">✅</span><b>일치</b>정본 · 시안 · 계약과 코드가 모두 맞음</div>
+    <div class="vd"><span class="e">❌</span><b>위반 · 누락</b>정본의 필드 · 계산식 · 상태가 없거나 다름</div>
+    <div class="vd"><span class="e">⚠️</span><b>임의 구현</b>정본에 없는 규칙이 질문 없이 들어감</div>
+    <div class="vd"><span class="e">🟡</span><b>가정 진행</b>ASSUMPTION 주석으로 선진행 중</div>
+    <div class="vd"><span class="e">❓</span><b>정본/시안 미정의</b>Blocking 질문으로 멈춘 상태</div>
+  </div>
+</section>
 
-    <!-- ================= 05 QUESTIONS & GATES ================= -->
-    <section id="questions">
-      <span class="eyebrow">05 · Questions &amp; Gates</span>
-      <h2>멈출 질문과 진행할 질문을 나눕니다</h2>
-      <p class="lead">모든 질문에서 멈추면 병목이 되고, 아무 질문에서도 멈추지 않으면 정본이 흩어집니다. 질문은 GitHub Issue로 올리고, Issue 번호가 그대로 질문 ID가 됩니다(예: <code>Q-SETT-142</code>).</p>
-      <div class="grid g2">
-        <div class="card">
-          <span class="tag t-bad">BLOCKING</span>
-          <h3 style="margin-top:8px;">금액 · 권한 · 상태 전이 · 개인정보 · PG</h3>
-          <p>해당 분기는 스텁(<code>[BLOCKED: Q-ID]</code>)으로 막고 같은 지시서의 다른 작업으로 넘어갑니다. 답이 오기 전에는 main에 병합하지 않습니다.</p>
-        </div>
-        <div class="card">
-          <span class="tag t-warn">ASSUMPTION</span>
-          <h3 style="margin-top:8px;">문구 · 정렬 · 사소한 UI 분기</h3>
-          <p>가장 합리적인 가정으로 진행하고 코드에 <code>[ASSUMPTION: Q-ID]</code>를 남깁니다. 정본에 반영돼 Issue가 <code>completed</code>로 닫힐 때까지 릴리스는 기다립니다.</p>
-        </div>
-      </div>
+<!-- 06 -->
+<section id="levels">
+  <div class="kicker cy">06 · 변경 등급</div>
+  <h2>모든 변경을 같은 무게로 돌리지 않습니다</h2>
+  <p class="lead">AI가 변경 등급을 제안하고 PO/PM이 확정합니다. 화면 명세 표가 바뀌면 L2로 제안됐어도 L1으로 올립니다.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>등급</th><th>언제</th><th>경로</th><th>게이트</th></tr></thead>
+      <tbody>
+        <tr><td><span class="cc">L1</span> Full Track</td><td>신규 화면, UI와 로직이 함께 바뀔 때</td><td>정의 → 지시서 → Figma → 구현 → 대조</td><td>모든 게이트</td></tr>
+        <tr><td><span class="cb">L2</span> Logic &amp; Patch</td><td>UI 변경 없이 수식 · 조건 · DB 로직만, 배포된 오탈자</td><td>정의 → 개발 지시서 → 구현 → 대조 (UIX 생략)</td><td>UI 검수 생략, 정본 · 계약 검증 필수</td></tr>
+        <tr><td><span class="cd">L3</span> Hotfix</td><td>운영 책임자가 장애로 선언한 건만</td><td>긴급 수정 · 배포 → 정본 사후 동기화</td><td>리뷰어 예외 승인으로 선배포. 영업일 3일(기본값) 안에 정본을 동기화하지 않으면 <b>담당자 재알림 → 리드 에스컬레이션</b>. 개발 병합은 막지 않음</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">개발 중 발견한 사소한 문구 · UI 분기는 L3가 아니라 <b>ASSUMPTION 경로</b>로, 이미 배포된 오탈자는 <b>L2</b>로 처리합니다. L3는 운영 장애 선조치에만 씁니다.</div>
+</section>
 
-      <h3 style="margin:36px 0 14px;">게이트는 두 층, ASSUMPTION은 두 단계</h3>
-      <div class="gate">
-        <div>
-          <span class="tag t-code">1층 · CI 필수 체크</span>
-          <h3>결과가 늘 같은 검사만</h3>
-          <ul>
-            <li><span class="tag t-mute">계약</span>OpenAPI 계약 테스트</li>
-            <li><span class="tag t-mute">계산</span>도메인 계산기 정답 대조</li>
-            <li><span class="tag t-mute">DB</span>임시 DB 테스트 · 코드 스타일</li>
-            <li><span class="tag t-mute">질문</span>ASSUMPTION · BLOCKED 주석 상태</li>
-          </ul>
-        </div>
-        <div>
-          <span class="tag t-visual">2층 · AI 리포트</span>
-          <h3>판단은 리뷰어가</h3>
-          <ul>
-            <li><span class="tag t-mute">PR</span><code>/spec-check</code> 결과를 코멘트로</li>
-            <li><span class="tag t-mute">이유</span>AI 판정은 실행마다 달라질 수 있음</li>
-            <li><span class="tag t-mute">결정</span>리뷰어가 리포트를 보고 반려 · 승인</li>
-          </ul>
-        </div>
-        <div>
-          <span class="tag t-warn">ASSUMPTION 주석</span>
-          <h3>main은 열고, 릴리스는 닫는다</h3>
-          <ul>
-            <li><span class="tag t-ok">main</span>미해결 · completed 허용</li>
-            <li><span class="tag t-bad">main</span>Issue 없음(<code>Q-PENDING</code>) 차단</li>
-            <li><span class="tag t-ok">릴리스</span>completed만 허용</li>
-            <li><span class="tag t-mute">정리</span>기각은 코드 제거, 중복은 원본 ID로</li>
-          </ul>
-        </div>
-      </div>
+<!-- 07 -->
+<section id="tracks">
+  <div class="kicker cb">07 · 화면 2-Track</div>
+  <h2>화면은 성격에 따라 두 트랙으로</h2>
+  <p class="lead">정적 HTML 프로토타입을 수십 개 관리하는 대신, 백오피스는 표준 골격으로, 유저 화면은 디자이너의 Figma 시안으로 시각 기준을 잡습니다.</p>
+  <div class="grid g2">
+    <div class="card"><span class="lbl cb">TRACK A · ADMN-*</span><h3>백오피스 · 어드민</h3><ul><li>표준 골격 4종: List-Modal · Detail-Form · Stats-Dashboard · Tabs-Complex</li><li>정본 화면 명세의 필터 · 컬럼 · 모달을 골격에 결합</li><li>맞는 골격이 없으면 골격 추가 질문을 올리고 가장 가까운 골격으로 진행</li></ul></div>
+    <div class="card"><span class="lbl ca">TRACK B · USER-*</span><h3>유저 프론트 · 브랜드</h3><ul><li>PRD로 Figma 초안을 만들고 디자인 시스템 토큰에 바인딩</li><li>Figma MCP로 확정 시안을 읽고 Code Connect(또는 컴포넌트 매핑표)로 기존 컴포넌트 재사용</li><li>AI가 레이아웃을 임의로 바꾸지 않음</li></ul></div>
+  </div>
+</section>
 
-      <h3 style="margin:36px 0 14px;">/spec-check 판정 5종</h3>
-      <div class="verdicts">
-        <div class="verdict"><span class="tag t-ok">✅</span><b>일치</b>정본 · 시안 · 계약과 코드가 모두 맞음</div>
-        <div class="verdict"><span class="tag t-bad">❌</span><b>위반 · 누락</b>정본에 있는 필드 · 계산식 · 상태가 없거나 다름</div>
-        <div class="verdict"><span class="tag t-bad">⚠️</span><b>임의 구현</b>정본에 없는 규칙이 질문 없이 들어감</div>
-        <div class="verdict"><span class="tag t-warn">🟡</span><b>가정 진행</b>ASSUMPTION 주석으로 선진행 중</div>
-        <div class="verdict"><span class="tag t-mute">❓</span><b>정본/시안 미정의</b>Blocking 질문으로 멈춘 상태</div>
-      </div>
-    </section>
+<!-- 08 -->
+<section id="skills">
+  <div class="kicker ca">08 · 5대 스킬</div>
+  <h2>다섯 개의 명령으로 전 과정을 돌립니다</h2>
+  <p class="lead">각 스킬의 원문 규격은 명세서 3절에 있고, 저장소의 <code>.claude/skills/</code>에 그대로 넣어 씁니다.</p>
+  <div class="grid g3" style="margin-bottom:16px;">
+    <div class="card"><code class="cc">/doc-init</code><h3>초기 정본 만들기</h3><p>레거시 코드 · 신규 초안을 읽어 표준 정본, POL 초안 번호, 색인, 화면 요약본을 만듭니다. 의심 로직은 레거시 질문으로.</p></div>
+    <div class="card"><code class="cc">/doc-rule</code><h3>공통 규칙 뽑기</h3><p>API 계약(<code>openapi.yaml</code>), 표준 UI 골격, Semantic 토큰 규약을 추출 · 갱신합니다.</p></div>
+    <div class="card"><code class="cc">/doc-update</code><h3>PO/PM 정본 개정</h3><p>POL 기준 영향 스캔 → 등급 제안 → 정본 · 계산기 · 계약 개정 → 작업 지시서 발행.</p></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><code class="cb">/dev-screen</code><h3>개발자 화면 구현</h3><p>지시서 · 화면 요약본 · UI 소스를 결합해 구현하고, 질문 등급별로 분기하고, <code>check.sh</code>를 돌립니다.</p></div>
+    <div class="card"><code class="cd">/spec-check</code><h3>정본 대조 검수</h3><p>정본 · Figma · 계약과 코드를 대조해 5종 판정 리포트를 냅니다. 파일은 고치지 않습니다.</p></div>
+  </div>
+</section>
 
-    <!-- ================= 06 LEVELS ================= -->
-    <section id="levels">
-      <span class="eyebrow">06 · Fast-Track</span>
-      <h2>모든 변경을 같은 무게로 돌리지 않습니다</h2>
-      <p class="lead">AI가 변경 등급을 제안하고 PO/PM이 확정합니다. 화면 명세 표가 바뀌면 L2로 제안됐어도 L1으로 올립니다.</p>
-      <div class="scroll-x">
-        <table class="tbl">
-          <thead><tr><th>등급</th><th>언제</th><th>경로</th><th>게이트</th></tr></thead>
-          <tbody>
-            <tr><td><span class="tag t-root">L1</span> Full Track</td><td>신규 화면, UI와 로직이 함께 바뀔 때</td><td>정의 → 지시서 → Figma → 구현 → 대조</td><td>모든 게이트</td></tr>
-            <tr><td><span class="tag t-code">L2</span> Logic &amp; Patch</td><td>UI 변경 없이 수식 · 조건 · DB 로직만, 배포된 오탈자</td><td>정의 → 개발 지시서 → 구현 → 대조 (UIX 생략)</td><td>UI 검수 생략, 정본 · 계약 검증 필수</td></tr>
-            <tr><td><span class="tag t-bad">L3</span> Hotfix</td><td>운영 책임자가 장애로 선언한 건만</td><td>긴급 수정 · 배포 → 정본 사후 동기화</td><td>리뷰어 예외 승인으로 선배포. 영업일 3일(기본값) 안에 정본을 동기화하지 않으면 <b>담당자 재알림 → 리드 에스컬레이션</b>, 개발 병합은 막지 않음</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="callout">개발 중 발견한 사소한 문구 · UI 분기는 L3가 아니라 <b>ASSUMPTION 경로</b>로, 이미 배포된 오탈자는 <b>L2</b>로 처리합니다. L3는 운영 장애 선조치에만 씁니다.</div>
-    </section>
+<!-- 09 -->
+<section id="roles">
+  <div class="kicker cc">09 · 직군별 역할</div>
+  <h2>사람이 하는 일은 정의와 결정으로 줄어듭니다</h2>
+  <p class="lead">전달 · 대조 · 반복 검사는 스킬과 CI가 맡고, 사람은 각자 아래 일에 집중합니다.</p>
+  <div class="grid g3">
+    <div class="card"><span class="lbl cc">PO / PM</span><h3>정의하고 결정한다</h3><ul><li><code>/doc-update</code>로 요구사항 입력</li><li>영향 범위 · 개정 diff 승인</li><li>질문 Issue 결정 후 정본 반영, <code>completed</code>로 종결</li></ul></div>
+    <div class="card"><span class="lbl ca">UIX</span><h3>시각 정본을 확정한다</h3><ul><li>상태 매트릭스 완비, 미바인딩 값 0개</li><li><code>Ready for Dev</code> 전환</li><li>정본에 Figma URL 등록 PR</li></ul></div>
+    <div class="card"><span class="lbl cb">FE / BE</span><h3>계약대로 만든다</h3><ul><li><code>/dev-screen</code>로 구현</li><li>정책 공백은 질문 Issue, 사소한 건 ASSUMPTION</li><li>CI 통과 · 리포트 확인 후 병합</li></ul></div>
+  </div>
+</section>
 
-    <!-- ================= 07 TRACKS ================= -->
-    <section id="tracks">
-      <span class="eyebrow">07 · Two UI Tracks</span>
-      <h2>화면은 성격에 따라 두 트랙으로</h2>
-      <p class="lead">정적 HTML 프로토타입을 수십 개 관리하는 대신, 백오피스는 표준 골격으로, 유저 화면은 디자이너의 Figma 시안으로 시각 기준을 잡습니다.</p>
-      <div class="grid g2">
-        <div class="card">
-          <span class="tag t-code">TRACK A</span>
-          <h3 style="margin-top:8px;">백오피스 · 어드민 <code>ADMN-*</code></h3>
-          <ul>
-            <li>표준 골격 4종: List-Modal · Detail-Form · Stats-Dashboard · Tabs-Complex</li>
-            <li>정본 화면 명세의 필터 · 컬럼 · 모달을 골격에 결합</li>
-            <li>맞는 골격이 없으면 골격 추가 질문을 올리고 가장 가까운 골격으로 진행</li>
-          </ul>
-        </div>
-        <div class="card">
-          <span class="tag t-visual">TRACK B</span>
-          <h3 style="margin-top:8px;">유저 프론트 · 브랜드 <code>USER-*</code></h3>
-          <ul>
-            <li>PRD로 Figma 초안을 만들고 디자인 시스템 토큰에 바인딩</li>
-            <li>Figma MCP로 확정 시안을 읽고, Code Connect(또는 컴포넌트 매핑표)로 기존 컴포넌트 재사용</li>
-            <li>AI가 레이아웃을 임의로 바꾸지 않음</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+<!-- 10 -->
+<section id="roadmap">
+  <div class="kicker cb">10 · 도입 순서</div>
+  <h2>질문지로 시작해 CI로 고정합니다</h2>
+  <p class="lead">먼저 온보딩 질문지로 팀별 설정값(SLA · 담당자 · 라벨 · 웹훅 등 48개)을 정하고, 시범 도메인 하나로 한 바퀴 돌린 뒤 CI에 고정합니다.</p>
+  <div class="grid g4 steps" style="margin-bottom:16px;">
+    <div class="card"><h3>설정값 정하기</h3><p>질문지에 답해 <code>agentic-env.yaml</code> 작성</p></div>
+    <div class="card"><h3>저장소 · 스킬</h3><p>명세서를 AI에 읽혀 2-Repo와 5대 스킬 생성</p></div>
+    <div class="card"><h3>공통 계약</h3><p><code>/doc-rule</code>로 API 계약 · UI 골격 고정</p></div>
+    <div class="card"><h3>시범 1사이클 → CI</h3><p>요구사항 1건으로 전 과정 검증 후 <code>check.sh</code>를 필수 체크로</p></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>프로젝트 유형</th><th>시작 방법</th><th>먼저 답할 질문</th></tr></thead>
+      <tbody>
+        <tr><td>신규 구축</td><td>2-Repo 생성 → <code>/doc-init</code>으로 초안 정본화 → 계약 수립 → 구현</td><td>저장소 · 담당자 · 식별자 · 디자인 시스템</td></tr>
+        <tr><td>전면 리뉴얼</td><td>구버전 코드 역분석 → 의심 로직은 레거시 질문(도메인당 상한) → 리뉴얼 요건 반영</td><td>라벨 · 담당자 · 게이트</td></tr>
+        <tr><td>운영 · 고도화</td><td>이번에 고칠 도메인만 정본화 → 그 도메인부터 게이트 적용</td><td>브랜치 전략 · 릴리스 판별 · CI</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">작업 지시와 질문의 정답 기록은 <b>Git과 spec-repo Issue 하나</b>입니다. 사내 업무 플랫폼이나 Google Workspace를 연결해도 알림 · 미러 용도로만 씁니다.</div>
+</section>
 
-    <!-- ================= 08 SKILLS ================= -->
-    <section id="skills">
-      <span class="eyebrow">08 · Five Skills</span>
-      <h2>다섯 개의 명령으로 전 과정을 돌립니다</h2>
-      <p class="lead">각 스킬의 원문 규격은 명세서 3절에 있고, 저장소의 <code>.claude/skills/</code>에 그대로 넣어 씁니다.</p>
-      <div class="scroll-x">
-        <table class="tbl">
-          <thead><tr><th>스킬</th><th>누가 · 언제</th><th>하는 일</th></tr></thead>
-          <tbody>
-            <tr><td><code>/doc-init</code></td><td>레거시 온보딩, 신규 초안 정본화</td><td>코드 · 초안을 읽어 표준 정본, POL 초안 번호, 색인, 화면 요약본 생성. 의심 로직은 레거시 질문으로</td></tr>
-            <tr><td><code>/doc-rule</code></td><td>초기 세팅, 공통 규칙 변경</td><td>API 계약(<code>openapi.yaml</code>), 표준 UI 골격, Semantic 토큰 규약 추출 · 갱신</td></tr>
-            <tr><td><code>/doc-update</code></td><td>PO/PM 상시</td><td>POL 기준 영향 스캔 → 등급 제안 → 정본 · 계산기 · 계약 개정 → 작업 지시서 발행</td></tr>
-            <tr><td><code>/dev-screen</code></td><td>FE/BE 상시</td><td>지시서 · 화면 요약본 · UI 소스 결합 구현, 질문 등급별 분기, check.sh 실행</td></tr>
-            <tr><td><code>/spec-check</code></td><td>개발자 커밋 전, 리뷰어 병합 전</td><td>정본 · Figma · 계약과 코드를 대조해 5종 판정 리포트 (파일 수정 없음)</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+<!-- 11 -->
+<section id="glossary">
+  <div class="kicker ca">11 · 용어</div>
+  <h2>꼭 알아야 할 용어 8개</h2>
+  <p class="lead">전체 용어 사전은 명세서 0절에 있습니다. 규칙 · 수치가 이 페이지와 다르면 명세서가 맞습니다.</p>
+  <div class="gloss">
+    <div><b>계층형 정본</b><small>Hierarchical SSOT</small><p>비즈니스 정책을 최상위로 두고 시각 정본과 인터페이스 정본이 파생되는 구조.</p></div>
+    <div><b>정책 추적 ID</b><small>POL-*</small><p>정책마다 붙는 영구 번호. 정책서 · 색인 · API · 테스트 · 커밋에 같은 ID를 남깁니다.</p></div>
+    <div><b>질문 ID</b><small>Q-ID</small><p>spec-repo Issue 번호로 만든 질문 식별자(<code>Q-SETT-142</code>). AI가 지어내지 않습니다.</p></div>
+    <div><b>가정 진행</b><small>ASSUMPTION</small><p>사소한 공백을 가정으로 채운 상태. main 병합은 되지만 <code>completed</code> 전에는 릴리스가 안 됩니다.</p></div>
+    <div><b>화면 요약본</b><small>Digest</small><p>화면 하나에 필요한 필드 · 상태 · 모달 · 수식만 뽑은 요약. AI는 정본 전체 대신 이것을 읽습니다.</p></div>
+    <div><b>변경 등급</b><small>Fast-Track L1~L3</small><p>신규 · 대규모(L1), UI 무변동 로직 · 패치(L2), 운영 장애 선조치(L3).</p></div>
+    <div><b>게이트 2층</b><small>CI + AI Report</small><p>CI는 결과가 늘 같은 검사만 막고, AI 판정은 PR 리포트로 남겨 리뷰어가 정합니다.</p></div>
+    <div><b>팀 설정 파일</b><small>agentic-env.yaml</small><p>온보딩 질문지 답을 기록하는 파일. 기한 · 담당자 · 라벨은 여기서 바꿉니다.</p></div>
+  </div>
+</section>
 
-    <!-- ================= 09 ROLES ================= -->
-    <section id="roles">
-      <span class="eyebrow">09 · Roles</span>
-      <h2>사람이 하는 일은 정의와 결정으로 줄어듭니다</h2>
-      <p class="lead">전달 · 대조 · 반복 검사는 스킬과 CI가 맡고, 사람은 각자 아래 일에 집중합니다.</p>
-      <div class="grid g3">
-        <div class="card"><span class="tag t-root">PO / PM</span><h3 style="margin-top:8px;">정의하고 결정한다</h3><ul><li><code>/doc-update</code>로 요구사항 입력</li><li>AI가 찾은 영향 범위 · 개정 diff 승인</li><li>질문 Issue 결정 후 정본 반영, <code>completed</code>로 종결</li></ul></div>
-        <div class="card"><span class="tag t-visual">UIX</span><h3 style="margin-top:8px;">시각 정본을 확정한다</h3><ul><li>상태 매트릭스 완비, 미바인딩 값 0개</li><li><code>Ready for Dev</code> 전환</li><li>정본에 Figma URL 등록 PR</li></ul></div>
-        <div class="card"><span class="tag t-code">FE / BE</span><h3 style="margin-top:8px;">계약대로 만든다</h3><ul><li><code>/dev-screen</code>로 구현</li><li>정책 공백은 질문 Issue, 사소한 건 ASSUMPTION</li><li>CI 통과 · 리포트 확인 후 병합</li></ul></div>
-      </div>
-    </section>
-
-    <!-- ================= 10 ROADMAP ================= -->
-    <section id="roadmap">
-      <span class="eyebrow">10 · Adoption</span>
-      <h2>도입 순서</h2>
-      <p class="lead">먼저 온보딩 질문지로 팀별 설정값(SLA · 담당자 · 라벨 · 웹훅 등 48개)을 정하고, 시범 도메인 하나로 한 바퀴 돌린 뒤 CI에 고정합니다.</p>
-      <div class="grid g4" style="margin-bottom:16px;">
-        <div class="card"><span class="num">STEP 1</span><h3>설정값 정하기</h3><p>질문지에 답해 <code>agentic-env.yaml</code> 작성</p></div>
-        <div class="card"><span class="num">STEP 2</span><h3>저장소 · 스킬</h3><p>명세서를 AI에 읽혀 2-Repo와 5대 스킬 생성</p></div>
-        <div class="card"><span class="num">STEP 3</span><h3>공통 계약</h3><p><code>/doc-rule</code>로 API 계약 · UI 골격 고정</p></div>
-        <div class="card"><span class="num">STEP 4</span><h3>시범 1사이클 → CI</h3><p>요구사항 1건으로 전 과정 검증 후 check.sh를 필수 체크로</p></div>
-      </div>
-      <div class="scroll-x">
-        <table class="tbl">
-          <thead><tr><th>프로젝트 유형</th><th>시작 방법</th><th>먼저 답할 질문</th></tr></thead>
-          <tbody>
-            <tr><td>신규 구축</td><td>2-Repo 생성 → <code>/doc-init</code>으로 초안 정본화 → 계약 수립 → 구현</td><td>저장소 · 담당자 · 식별자 · 디자인 시스템</td></tr>
-            <tr><td>전면 리뉴얼</td><td>구버전 코드 역분석 → 의심 로직은 레거시 질문(도메인당 상한) → 리뉴얼 요건 반영</td><td>라벨 · 담당자 · 게이트</td></tr>
-            <tr><td>운영 · 고도화</td><td>이번에 고칠 도메인만 정본화 → 그 도메인부터 게이트 적용</td><td>브랜치 전략 · 릴리스 판별 · CI</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="callout">작업 지시와 질문의 정답 기록은 <b>Git과 spec-repo Issue 하나</b>입니다. 사내 업무 플랫폼이나 Google Workspace를 연결해도 알림 · 미러 용도로만 씁니다.</div>
-    </section>
-
-    <!-- ================= 11 GLOSSARY ================= -->
-    <section id="glossary">
-      <span class="eyebrow">11 · Glossary</span>
-      <h2>꼭 알아야 할 용어 8개</h2>
-      <p class="lead">전체 용어 사전은 명세서 0절에 있습니다. 규칙 · 수치가 이 페이지와 다르면 명세서가 맞습니다.</p>
-      <dl class="gloss">
-        <dt>계층형 정본<small>Hierarchical SSOT</small></dt><dd>비즈니스 정책을 최상위로 두고 시각 정본(Figma)과 인터페이스 정본(API 계약)이 파생되는 구조.</dd>
-        <dt>정책 추적 ID<small>POL-*</small></dt><dd>정책마다 붙는 영구 번호. 정책서 · 색인 · API · 테스트 · 커밋에 같은 ID를 남겨 영향 범위를 찾는다.</dd>
-        <dt>질문 ID<small>Q-ID</small></dt><dd>spec-repo Issue 번호로 만든 질문 식별자(<code>Q-SETT-142</code>). AI가 지어내지 않는다.</dd>
-        <dt>가정 진행<small>ASSUMPTION</small></dt><dd>사소한 공백을 가정으로 채우고 진행한 상태. main 병합은 되지만 <code>completed</code> 종결 전에는 릴리스가 안 된다.</dd>
-        <dt>화면 요약본<small>Digest</small></dt><dd>화면 하나에 필요한 필드 · 상태 · 모달 · 수식만 뽑은 요약. AI는 정본 전체 대신 이것을 읽는다.</dd>
-        <dt>변경 등급<small>Fast-Track L1~L3</small></dt><dd>신규 · 대규모(L1), UI 무변동 로직 · 패치(L2), 운영 장애 선조치(L3)로 나눈 경로.</dd>
-        <dt>게이트 2층<small>CI + AI Report</small></dt><dd>CI는 결과가 늘 같은 검사만 막고, AI 판정은 PR 리포트로 남겨 리뷰어가 정한다.</dd>
-        <dt>팀 설정 파일<small>agentic-env.yaml</small></dt><dd>온보딩 질문지 답을 기록하는 파일. 기한 · 담당자 · 라벨 같은 값은 명세서가 아니라 여기서 바꾼다.</dd>
-      </dl>
-      <footer>AI 에이전틱 시스템 구축 가이드 v1.3.0 · 정본은 <a href="./AI_에이전틱_환경_구축.md">AI_에이전틱_환경_구축.md</a> · 검토 기록은 <a href="./AI_에이전틱_검토로그.md">AI_에이전틱_검토로그.md</a></footer>
-    </section>
-  </main>
-</div>
+<footer>
+  <span>AI 에이전틱 시스템 구축 가이드 v1.3.0</span>
+  <span>정본 <a href="./AI_에이전틱_환경_구축.md">명세서 MD</a> · <a href="./AI_에이전틱_온보딩_질문지.md">온보딩 질문지</a> · <a href="./AI_에이전틱_검토로그.md">검토로그</a></span>
+</footer>
 
 <script>
   (function () {
-    var root = document.documentElement;
-    try { var saved = localStorage.getItem("agentic-theme"); if (saved) root.setAttribute("data-theme", saved); } catch (e) {}
-    document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        var dark = root.getAttribute("data-theme") === "dark" ||
-          (!root.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
-        var next = dark ? "light" : "dark";
-        root.setAttribute("data-theme", next);
-        try { localStorage.setItem("agentic-theme", next); } catch (e) {}
-      });
-    });
-    var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
     if (!("IntersectionObserver" in window)) return;
+    var links = Array.prototype.slice.call(document.querySelectorAll(".nav-links a[href^='#']"));
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         links.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id); });
       });
-    }, { rootMargin: "-30% 0px -60% 0px" });
-    document.querySelectorAll("main section[id]").forEach(function (s) { io.observe(s); });
+    }, { rootMargin: "-35% 0px -60% 0px" });
+    document.querySelectorAll("section[id]").forEach(function (s) { io.observe(s); });
   })();
 </script>
 </body>
