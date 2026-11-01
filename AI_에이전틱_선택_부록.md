@@ -34,13 +34,30 @@
 
 사내 업무 플랫폼이나 Google Workspace(시트 · 챗)를 붙이고 싶으면 별도로 설계한다. 어느 경우에도 정답 기록은 Git(정본 · TASK)과 spec-repo Issue 하나이고, 다른 도구는 알림과 보기 용도로만 쓴다.
 
-## 6. 향후 과제 (미설계)
+## 6. 청사진: 지금 도입할 것과 이후 목표 (미설계)
 
-지금 이 체계는 사람과 AI가 함께 따르는 운영 규약에 가깝다. 완전한 AI 에이전틱 시스템이 되려면 아래 구성요소가 더 필요하며, 과제로 남겨 둔다.
+지금 이 체계는 사람과 AI가 함께 따르는 운영 규약에 가깝다. 아래처럼 두 층으로 나눈다.
 
-- 실행 엔진(오케스트레이터)
-- 보안(권한 · 비밀값 관리)
-- 인프라 관리
-- 모니터링(관측성)
-- 평가(AI 결과 품질 측정)
-- 비용 관리(토큰 사용량)
+**지금 바로 도입(현재 설계)**: 정본 · API 계약 · 시안, 작업 지시서 · 질문 Issue, 스킬 5종, 자동 검사 · 배포 관문.
+
+**이후 바라볼 목표(+ 요소)**: 완전한 AI 에이전틱 시스템이 되려면 현재 설계 위에 아래 요소가 더해져야 한다. 이번에는 과제로 남겨 둔다.
+
+| 요소 | 한 줄 설명 | 참고 |
+| :--- | :--- | :--- |
+| 실행 엔진(오케스트레이터) | Issue · TASK 같은 이벤트를 받아 에이전트를 실행하고 일을 나눔 | Anthropic, OpenAI |
+| 가드레일 · 사람 승인 | 입력 · 출력 검사, 위험한 작업은 사람이 승인 | OpenAI |
+| 보안 | 에이전트 신원 · 최소 권한 · 비밀값 관리 | OWASP |
+| 관측성 · 모니터링 | 에이전트 실행 추적과 로그 | OpenTelemetry |
+| 평가 | AI 결과 품질을 정해진 시나리오로 반복 측정 | Anthropic |
+| 비용 관리 | 토큰 사용량 측정과 한도 | OpenTelemetry |
+| 도구 연결 표준 | MCP로 GitHub · Figma · 사내 시스템 연결 | MCP 명세 |
+| 기억 · 지식 색인 | 작업 간 기억과 정본 검색 | Anthropic |
+| 인프라 | 에이전트 실행 환경 · 샌드박스 배포와 관리 | — |
+
+참고 자료:
+- Anthropic, Building effective agents: https://www.anthropic.com/engineering/building-effective-agents
+- Anthropic, Demystifying evals for AI agents: https://www.anthropic.com/research/demystifying-evals-for-ai-agents
+- OpenAI, A practical guide to building agents: https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf
+- OpenTelemetry, AI Agent Observability: https://opentelemetry.io/blog/2025/ai-agent-observability/
+- OWASP Top 10 for Agentic Applications: https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/
+- Model Context Protocol 명세: https://modelcontextprotocol.io/specification/2026-07-28
