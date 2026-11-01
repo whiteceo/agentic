@@ -295,6 +295,12 @@
   @media (min-width: 641px) and (max-width: 960px) { .g3 > :last-child:nth-child(odd), .gate > :last-child:nth-child(odd), .verdicts > :last-child:nth-child(odd) { grid-column: 1 / -1; } }
   @media (min-width: 641px) { .fn dl > div:last-child:nth-child(odd) { grid-column: 1 / -1; } }
   @media (max-width: 640px) { .roles > .role:last-child:nth-child(odd) { grid-template-columns: 1fr; } }
+  /* ---- 한 화면에 한 절(데스크톱) ---- */
+  @media (min-width: 961px) and (min-height: 640px) {
+    html { scroll-snap-type: y proximity; scroll-padding-top: 65px; }
+    .hero, section { min-height: calc(100vh - 65px); display: flex; flex-direction: column; justify-content: center; scroll-snap-align: start; }
+    section { padding-top: 64px; padding-bottom: 64px; }
+  }
 </style>
 <script>(function(){var m=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;if(!m&&"IntersectionObserver" in window)document.documentElement.classList.add("anim");})();</script>
 </head>
