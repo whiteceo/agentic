@@ -236,7 +236,7 @@ PO/PM, UIX 디자이너, 개발자가 각각 **여러 명(N:M:K)**인 조직에�
   - 개발 저장소(`app-repo`)의 `/docs`는 gitignore된 사본이므로, 개발자 AI는 미정의 질문 발생 시 로컬 파일이 아닌 GitHub CLI를 통해 원격 `spec-repo`에 GitHub Issue를 직접 발의한다:
     - 차단 질문(`blocking: true`): `gh issue create --repo <org>/spec-repo --title "[<도메인>] <제목>" --label "domain:<도메인>" --label "blocking-question"`
     - 비차단 질문(`blocking: false`): `gh issue create --repo <org>/spec-repo --title "[<도메인>] <제목>" --label "domain:<도메인>" --label "assumption-question"`
-  - **즉시 알림 및 실패 시 폴백(Fallback)**: Issue 발의 즉시 사내 메신저 웹훅을 호출하여 담당 PO/PM에게 질문을 알린다 (메신저 · 웹훅 Secrets · 알림 대상 라벨은 ENV-18 · ENV-19). 웹훅이나 gh CLI 호출 실패 시, AI는 로컬 실패 큐(기본 `tmp/questions-failed/`, ENV-20)에 에러 로그를 남기고 터미널에 경고를 출력하며 다음 실행 시 재시도한다. 번호를 받지 못한 동안에는 `// [ASSUMPTION: Q-PENDING] <제목>`으로 적고, 재시도가 성공하면 번호로 바꾼다. CI는 `Q-PENDING`을 항상 차단한다.
+  - **즉시 알림과 실패 시 폴백(Fallback)**: 메신저 웹훅 알림은 **spec-repo 워크플로 W1만 보낸다**(5.2). AI와 개발자는 웹훅을 직접 호출하지 않고 Issue 발의만 한다. 그래서 알림이 두 번 가거나 개인 PC에 웹훅 비밀값을 둘 일이 없다 (메신저 · 웹훅 Secrets · 알림 대상 라벨은 ENV-18 · ENV-19). `gh` 호출(Issue 발의)이 실패하면 AI는 로컬 실패 큐(기본 `tmp/questions-failed/`, ENV-20)에 에러 로그를 남기고 터미널에 경고를 출력하며 다음 실행 시 재시도한다. 번호를 받지 못한 동안에는 `// [ASSUMPTION: Q-PENDING] <제목>`으로 적고, 재시도가 성공하면 번호로 바꾼다. CI는 `Q-PENDING`을 항상 차단한다.
   - **도메인별 Issue 담당자 자동 지정 및 PR 연동**:
     - CODEOWNERS는 PR 리뷰어 전용이므로, 개발자 AI는 단순히 `gh issue create --label "domain:<도메인>"`으로 발의만 수행한다.
     - spec-repo의 GitHub Actions(`.github/workflows/assign-issue.yml`)가 `issues: opened` 이벤트에서 라벨을 읽고, 저장소 내 도메인 매핑 설정(`.github/domain-assignees.json`)을 참조하여 담당 PO/PM 계정을 Issue 담당자(Assignee)로 자동 지정한다 (담당자 · 대리인은 ENV-09, 워크플로 방식은 ENV-21).
@@ -313,7 +313,7 @@ PO/PM, UIX 디자이너, 개발자가 각각 **여러 명(N:M:K)**인 조직에�
 | 구분 | **[기본 (Core)] Git 내장 작업 지시서 & 질문 MD (외부 의존성 0)** | **[확장 제안 (Option A)] 사내 업무플랫폼 경량 API 직결** | **[대안 (Option B)] Google Workspace 연동** |
 | :--- | :--- | :--- | :--- |
 | **작동 원리** | • PO/PM이 `/doc-update`로 요구사항을 정의하면 **`docs/changes/<도메인>/TASK-*.md`** 생성 및 `LATEST_TASK.md` 인덱스 갱신<br>• 개발자의 로컬 AI가 `sync-spec.sh` 후 내 화면 지시서를 찾아 구현 착수 | • 사내 업무플랫폼(자체 구축 게시판)에 **AI 전용 경량 REST API 3종(`POST 안건등록`, `GET 피드백조회`, `PATCH 상태변경`)** 개방<br>• 초기 1회 동기화한 **`project-meta.json`**을 읽고 AI가 프로젝트 선택 및 담당자 지정을 자동 세팅해 게시 | • 사내 플랫폼 API 개방 전 과도기 또는 외부 협업 시, AI에 기본 내장된 **GWS MCP/CLI**로 Google Sheets 및 Google Chat 스페이스에 자동 등록·조회 |
-| **미정의 항목 질문 처리** | • 예외 발견 시 `/dev-screen`이 **spec-repo에 질문 GitHub Issue 발의 (`gh issue create`)**<br>• 웹훅 즉시 알림 + `domain:` 라벨 기반 Issue 담당자 자동 지정<br>• PO/PM 정본 반영 후 `Closed: completed` 종결 및 `docs/questions/` 아카이빙 | • 개발자·UIX가 사내 플랫폼 안건에 댓글을 달면, PO/PM의 AI가 `GET` API로 댓글을 직접 읽어와 브리핑 | • Google Sheets 행 코멘트 또는 Chat 스레드를 AI가 직접 읽어와 브리핑 |
+| **미정의 항목 질문 처리** | • 예외 발견 시 `/dev-screen`이 **spec-repo에 질문 GitHub Issue 발의 (`gh issue create`)**<br>• W1이 `domain:` 라벨로 담당자 지정 + 웹훅 알림 (AI는 웹훅 호출 안 함)<br>• PO/PM 정본 반영 후 `Closed: completed` 종결 및 `docs/questions/` 아카이빙 | • 개발자·UIX가 사내 플랫폼 안건에 댓글을 달면, PO/PM의 AI가 `GET` API로 댓글을 직접 읽어와 브리핑 | • Google Sheets 행 코멘트 또는 Chat 스레드를 AI가 직접 읽어와 브리핑 |
 | **장점** | **추가 개발 공수 0건**, 즉시 가동 가능, 코드·정본·작업 지시서가 Git 히스토리에 완벽히 일치 | 전 직원이 익숙한 사내 공식 플랫폼으로 일원화, 비개발자(UIX·타부서) 웹 접근성 최상 | 별도 API 개발 없이 즉시 외부 협업 가능 |
 
 ---
@@ -476,9 +476,9 @@ description: 동기화된 LATEST_TASK.md 인덱스를 읽어 해당 지시서와
 
 ## Step 3. 정책 질문 등급별 분기 처리 (Blocking vs ASSUMPTION)
 1. 구현 중 미정의 예외 케이스를 발견하면 (개발 저장소의 `/docs`는 gitignore 사본이므로 원격 `spec-repo`로 Issue 발의):
-   - **금액/권한/상태전이/보안 (Blocking)**: 작업을 즉시 멈추고 GitHub CLI로 `gh issue create --repo <org>/spec-repo --title "[<도메인>] <제목>" --label "domain:<도메인>" --label "blocking-question"`을 호출하여 발의하고, 웹훅 즉시 알림을 보낸다. 답을 기다리는 동안 해당 분기는 스텁(미구현 예외 + `// [BLOCKED: Q-ID]`)으로 막고 같은 지시서의 다른 화면 · 테스트로 넘어간다.
+   - **금액/권한/상태전이/보안 (Blocking)**: 작업을 즉시 멈추고 GitHub CLI로 `gh issue create --repo <org>/spec-repo --title "[<도메인>] <제목>" --label "domain:<도메인>" --label "blocking-question"`을 호출하여 발의한다(알림은 spec-repo W1이 보낸다). 답을 기다리는 동안 해당 분기는 스텁(미구현 예외 + `// [BLOCKED: Q-ID]`)으로 막고 같은 지시서의 다른 화면 · 테스트로 넘어간다.
    - **단순 문구/정렬/경미한 UI 분기 (Non-blocking)**: `gh issue create --repo <org>/spec-repo --title "[<도메인>] <제목>" --label "domain:<도메인>" --label "assumption-question"`을 발의하고, 코드에 `// [ASSUMPTION: Q-ID] <가정 내용>` 주석을 달고 작업을 중단하지 않고 선진행한다 (`🟡 가정 진행 (Pending)` 상태).
-   - **웹훅/gh 호출 실패 시**: 에이전트는 로컬 `tmp/questions-failed/` 큐에 에러 로그를 남기고 터미널에 경고를 출력하며 다음 실행 시 재시도한다. 번호를 받지 못한 동안에는 `// [ASSUMPTION: Q-PENDING] <제목>`으로 적고, 재시도가 성공하면 번호로 바꾼다. CI는 `Q-PENDING`을 항상 차단한다.
+   - **gh 호출 실패 시**: 에이전트는 로컬 `tmp/questions-failed/` 큐에 에러 로그를 남기고 터미널에 경고를 출력하며 다음 실행 시 재시도한다. 번호를 받지 못한 동안에는 `// [ASSUMPTION: Q-PENDING] <제목>`으로 적고, 재시도가 성공하면 번호로 바꾼다. CI는 `Q-PENDING`을 항상 차단한다.
 2. **질문 종결(`completed` vs `not_planned` vs `duplicate`) 후 코드 처리**:
    - **정본 반영 승인(`Closed: completed`)**: GitHub Issue가 `completed`로 정상 종결된 주석은 릴리스가 허용되며, 개발자 AI는 다음 화면 작업 시 코드의 `// [ASSUMPTION: Q-ID]` 주석을 제거하고 확정된 정본 정책 주석(`// @policy POL-ID`)으로 교체한다.
    - **기각·미반영 종결(`Closed: not_planned`)**: 가정한 정책이 반려되었으므로, 해당 임시 가정 코드를 즉시 삭제하거나 변경 전 코드로 되돌린 뒤 `// [ASSUMPTION: Q-ID]` 주석을 함께 제거한다. 정리하지 않으면 main 병합과 릴리스가 모두 막힌다.
@@ -554,7 +554,7 @@ AI 에이전트가 새 프로젝트에 이 체계를 세팅할 때 아래 순서
 | 단계 | 할 일 | 실행 주체 | 산출물 | 완료 확인 |
 | :---: | :--- | :--- | :--- | :--- |
 | **0** | 온보딩 질문지 작성 · `agentic-env.yaml` 확정 | 리드 PO/PM · 테크리드 | `spec-repo/agentic-env.yaml` | 질문지 **필수** 항목이 모두 채워짐 |
-| **1** | GitHub 기반 준비: `spec-repo` · `app-repo` 생성, 팀(ENV-11), 라벨(ENV-16), 브랜치 보호(ENV-04), 저장소 간 권한 GitHub App 설치 · Secrets 등록(ENV-06 · ENV-18) | 테크리드 (사람) | 두 저장소, 라벨, 팀, Secrets | `gh label list` · `gh secret list`로 이름 대조, App이 두 저장소에 설치됨 |
+| **1** | GitHub 기반 준비: `spec-repo` · `app-repo` 생성, 팀(ENV-11), 라벨(ENV-16), 브랜치 보호 규칙(ENV-04, 5.3 자동 커밋 예외 포함), 저장소 간 권한 GitHub App 설치 · Secrets 등록(ENV-06 · ENV-18) | 테크리드 (사람) | 두 저장소, 라벨, 팀, Secrets | `gh label list` · `gh secret list`로 이름 대조, App이 두 저장소에 설치됨 |
 | **2** | `spec-repo` 골격 생성: 1.2절 폴더 구조, `AGENTS.md`(4절 규약), `docs/specs/_registry.yaml`(빈 대장), `.github/CODEOWNERS`(ENV-10), `.github/domain-assignees.json`(ENV-09), `scripts/new-id.sh` | AI | 골격 커밋 1개 | 폴더 · 파일 존재, `new-id.sh`가 길이 ENV-14의 해시 출력 |
 | **3** | `spec-repo` 워크플로 5종 추가(5.2 표 W1~W5) | AI → 테크리드 리뷰 | `.github/workflows/*.yml` | 테스트 Issue 1건으로 W1 담당자 지정 · 알림, 닫기로 W2 아카이브 생성 확인 |
 | **4** | `app-repo` 골격: `spec.lock`, `scripts/sync-spec.sh`, `scripts/check.sh`(1.2 항목), `.gitignore`에 `/docs` · 실패 큐(ENV-20) 등록 | AI | 골격 커밋 1개 | `sync-spec.sh`가 `spec.lock` SHA의 정본을 받음, `check.sh` 빈 프로젝트에서 통과 |
@@ -562,7 +562,7 @@ AI 에이전트가 새 프로젝트에 이 체계를 세팅할 때 아래 순서
 | **6** | 스킬 설치: `spec-repo/.claude/skills/`에 `doc-init` · `doc-rule` · `doc-update`, `app-repo/.claude/skills/`에 `dev-screen` · `spec-check` (3절 원문) | AI | `SKILL.md` 5개 | 각 저장소에서 스킬 목록에 노출 |
 | **7** | 정본 · 계약 초기화: 신규는 `/doc-init`(초안), 레거시는 대상 도메인만 `/doc-init`(ENV-48 상한) → `/doc-rule` | AI → PO/PM 승인 | 정본 v1.0.0, `openapi.yaml`, `00_ui_system.md`, 색인 · 요약본 | PO/PM 승인 PR 머지, W3이 색인 생성 |
 | **8** | 시범 1사이클: 요구사항 1건으로 `/doc-update` → `/dev-screen` → `/spec-check` → 병합 → 릴리스 | 전 직군 | 시범 PR · 질문 Issue · 릴리스 1건 | 가이드 HTML "사례로 따라가기"의 6단계가 모두 재현됨 |
-| **9** | 게이트 고정: W6을 필수 상태 체크로, W7을 릴리스 필수 체크로 등록 | 테크리드 (사람) | 브랜치 보호 규칙 | 규칙 화면에서 필수 체크 이름 확인 |
+| **9** | 게이트 고정: W6을 main 필수 상태 체크로 등록, 배포 워크플로가 W7을 `needs`로 기다리게 연결(5.3) | 테크리드 (사람) | 브랜치 보호 규칙, 배포 워크플로 수정 | 규칙 화면에서 W6 확인, 미해결 ASSUMPTION이 있는 테스트 태그에서 배포 잡이 건너뛰어짐 |
 
 ### 5.2 GitHub Actions 워크플로 목록 (9종)
 
@@ -576,6 +576,15 @@ AI 에이전트가 새 프로젝트에 이 체계를 세팅할 때 아래 순서
 | **W4** | `registry-check.yml` (spec-repo) | `pull_request` (`docs/specs/**`, `docs/adr/**`) | `contents: read` | 변경된 POL · ADR 번호 → `_registry.yaml` 중복 · 미예약 시 실패 |
 | **W5** | `contract-approval.yml` (spec-repo) | `pull_request`, `pull_request_review` (`contracts/**`) | `pull-requests: read` + 조직 멤버 읽기 토큰 | 리뷰 목록 → FE 팀 · BE 팀 승인이 각각 ENV-29 이상이면 통과 (도입 초기 생략 가능, 1.2.1-3) |
 | **W6** | `check.yml` (app-repo) | `pull_request`, `push: main` | `contents: read` + spec-repo Issues 읽기(ENV-06) | `spec.lock` 정본 + 코드 → `check.sh` 전 항목, ASSUMPTION main 게이트(`Q-PENDING` · 조회 불가 · 미정리 `not_planned`/`duplicate` · `[BLOCKED]` 차단) |
-| **W7** | `release-gate.yml` (app-repo) | 릴리스 판별 이벤트(ENV-26: 태그 · 릴리스 브랜치 · 라벨) | `contents: read` + spec-repo Issues 읽기 | 코드의 모든 `[ASSUMPTION: Q-ID]` → 전부 `completed`일 때만 통과 |
+| **W7** | `release-gate.yml` (app-repo) | `workflow_call`(배포 워크플로가 호출) + 릴리스 판별 이벤트(ENV-26) | `contents: read` + spec-repo Issues 읽기 | 코드의 모든 `[ASSUMPTION: Q-ID]` → 전부 `completed`일 때만 성공. 배포 잡은 `needs: release-gate`로 이 결과를 기다린다(5.3) |
 | **W8** | `hotfix-sync.yml` (app-repo) | `pull_request: closed`(병합 · `hotfix` 라벨) + 매일 `schedule` | spec-repo Issues 쓰기(ENV-06), 웹훅 Secrets | 병합 시 spec-repo에 `hotfix-sync` Issue 생성 · 배정, 기한(ENV-23 · 24) 초과 시 재알림 → 에스컬레이션(ENV-25). 병합은 막지 않음 |
 | **W9** | `task-status.yml` (app-repo) | `pull_request: closed`(병합) | spec-repo Contents 쓰기(ENV-06) | PR 본문의 `Task: TASK-...` → 해당 TASK `status: DONE` 커밋(W3이 인덱스 재생성) |
+
+### 5.3 실행 막힘 방지 규칙
+
+1. **자동 커밋(W2 · W3 · W9)과 브랜치 보호**: 이 세 워크플로는 생성 파일만 main에 직접 커밋한다. 사람 · AI의 PR에는 이 파일을 넣지 않으므로(1.4-(1)) PR로 돌리면 PR만 쌓인다.
+   - 기본: 저장소 규칙(Rulesets)의 **우회 허용(bypass) 대상에 에이전틱 GitHub App만** 넣고, App 커밋은 아래 경로만 바꾸도록 워크플로에서 경로를 검사한다. 다른 경로가 섞이면 워크플로가 커밋하지 않고 실패한다.
+     - W2: `docs/questions/**` · W3: `docs/changes/LATEST_TASK.md`, `docs/digest/canon_index.md` · W9: `docs/changes/**/TASK-*.md`의 `status` 줄
+   - 대안(조직 정책상 우회를 허용할 수 없을 때): 같은 워크플로가 `auto/index`처럼 고정 브랜치에 커밋하고 PR을 열어 자동 병합한다. 필수 체크가 통과해야 병합되므로 반영이 몇 분 늦어진다.
+2. **태그 릴리스와 W7**: 필수 상태 체크는 PR 병합만 막고 태그 푸시나 릴리스 생성은 막지 못한다. 그래서 W7을 독립 체크로 두지 않고, **배포 워크플로가 W7을 `workflow_call`로 부른 뒤 배포 잡이 `needs: release-gate`로 결과를 기다리게** 한다. W7이 실패하면 배포 잡은 실행되지 않는다. 배포를 수동으로 하는 팀은 배포 체크리스트 첫 줄에 W7 수동 실행 결과를 둔다.
+3. **알림 발송 주체는 하나**: 메신저 웹훅은 W1(spec-repo, 질문)과 W8(app-repo, 핫픽스 기한)만 보낸다. AI 스킬 · 로컬 스크립트는 웹훅을 호출하지 않는다.

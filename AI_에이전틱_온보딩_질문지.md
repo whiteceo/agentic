@@ -59,7 +59,7 @@
 | ENV-17 | `BLOCKING_CATEGORIES` | 작업을 멈추는 Blocking 대상 범주는? (추가 · 제외할 범주) | 결제 금액 산식, 정산 수수료, 회원 권한/인가, 상태 전이 조건, 개인정보, PG 연동 | 권장 | 리드 PO/PM | 1.4-(2) 2 |
 | ENV-18 | `NOTIFY_CHANNEL` · `NOTIFY_WEBHOOK_SECRET` | 질문 즉시 알림 메신저(Slack / Teams / 기타)와 채널, 웹훅 URL을 담을 Secrets 이름은? 도메인별 채널을 나누는가? | Slack/Teams 웹훅 (URL 미정) | 필수 | 리드 PO/PM · 테크리드 | 1.4-(2) 1 |
 | ENV-19 | `NOTIFY_LABELS` | 즉시 알림을 보낼 라벨 범위는? (Blocking만 / 전체) | `blocking-question`만 웹훅, 나머지는 GitHub 알림 | 권장 | 리드 PO/PM | 1.4-(2) 1 |
-| ENV-20 | `QUESTION_FAIL_QUEUE_DIR` · `QUESTION_RETRY` | 발의 · 알림 실패 시 로컬 큐 경로와 재시도 횟수는? 큐 폴더는 `.gitignore`에 등록했는가? | `tmp/questions-failed/`, 다음 실행 시 재시도 (횟수 미정) | 권장 | 테크리드 | 1.4-(2) 1, 3.4 Step 3 |
+| ENV-20 | `QUESTION_FAIL_QUEUE_DIR` · `QUESTION_RETRY` | Issue 발의(`gh`) 실패 시 로컬 큐 경로와 재시도 횟수는? (웹훅 알림은 W1이 보내므로 로컬에서 재시도하지 않음) 큐 폴더는 `.gitignore`에 등록했는가? | `tmp/questions-failed/`, 다음 실행 시 재시도 (횟수 미정) | 권장 | 테크리드 | 1.4-(2) 1, 3.4 Step 3 |
 | ENV-21 | `ASSIGN_WORKFLOW` | 담당자 자동 지정 워크플로 파일 이름 · 매핑 파일 이름은? 다른 방식(GitHub Projects 자동화 등)을 쓰는가? | `.github/workflows/assign-issue.yml` + `.github/domain-assignees.json` | 권장 | 테크리드 | 1.4-(2) 1 |
 | ENV-22 | `BLOCKING_ANSWER_SLA` | Blocking 질문에 PO/PM이 답할 목표 기한과, 기한을 넘기면 누구에게 올리는가(에스컬레이션)? | 미정 (본문에 없음) | 권장 | 리드 PO/PM | 1.4-(2) 2 (신규 제안) |
 
