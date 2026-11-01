@@ -19,7 +19,7 @@
 | **Contract-First** (`Contract-First Development`) | **계약 우선 개발** | 백엔드 API 완성을 기다리지 않고, 사전에 확정된 API 스키마/Mock JSON(인터페이스 정본)을 기준으로 FE와 BE가 즉시 병렬 구현에 착수하는 개발 방식. |
 | **추적 ID** (`Traceability ID / POL-*`) | **정책 추적 식별자** | 비즈니스 정책 항목마다 PO/PM이 부여하는 영구 식별자(`POL-<도메인>-<번호>`). PRD ↔ Figma 색인 ↔ API 스키마 ↔ 테스트 함수 ↔ Git 커밋에 동일 부여하여 AI가 영향 범위를 즉시 추출하는 열쇠. |
 | **질문 등급** (`Blocking vs ASSUMPTION`) | **질문 등급 분리 규칙** | 질문 병목을 막는 이원화 규칙. 금액·권한·상태전이 등 핵심은 작업을 멈추는 `Blocking`, 단순 문구·정렬은 `[ASSUMPTION: Q-ID]` 태그를 달고 선진행한 뒤 사후 승인받는 `Non-blocking`. |
-| **가정 진행** (`🟡 Pending`) | **검수 5대 등급 (임시 선진행)** | 비차단 질문에 대해 `[ASSUMPTION: Q-ID]` 주석을 달고 개발을 선진행한 상태. 피처 브랜치에서는 허용되나 main 병합 시 해당 질문 Issue가 `completed`로 종결되지 않은(OPEN · `not_planned` · `duplicate` · 조회 불가) 주석이 남아 있으면 병합이 차단됨. |
+| **가정 진행** (`🟡 Pending`) | **검수 5대 등급 (임시 선진행)** | 비차단 질문에 대해 `[ASSUMPTION: Q-ID]` 주석을 달고 개발을 선진행한 상태. main 병합까지는 허용되며, 릴리스(ENV-26) 시점에는 Issue가 `completed`로 종결된 주석만 허용하고, 미해결(`OPEN`) · `not_planned` · `duplicate` 종결 건이 남아 있으면 릴리스가 차단된다. main 병합은 미해결(`OPEN`) 주석이 있어도 허용하되, Issue가 없는 주석(`Q-PENDING`, 조회 불가)은 main 병합도 막는다. |
 | **화면 상태 매트릭스** (`Screen State Matrix`) | **화면 상태 체크리스트** | 와이어프레임 생략 시 해피패스만 남는 문제를 차단하기 위해, 각 화면의 기본 5대 상태(정상·로딩·빈화면·오류·권한없음) 및 도메인 특화 상태(부분실패 등)를 규격화한 디자인 확정(`Ready for Dev`) 필수 체크리스트. |
 | **Figma Code Connect** | **코드 컴포넌트 매핑 도구** | Figma 컴포넌트와 실제 프로덕션 코드 컴포넌트를 1:1로 매핑하여, AI가 시안을 단순한 '그림 레이어'가 아니라 실제 코드 컴포넌트(`Button`, `Modal` 등)로 직결 인식하게 하는 도구. |
 | **AGENTS.md** | **에이전트 공통 행동 헌법** | 모든 코딩 에이전트(Claude Code, 안티그래비티 등)가 공통으로 따르는 프로젝트 최상위 행동 규약. 정본 우선순위, 질문 등급 기준, ASSUMPTION 표기법, 추적 ID 작성 규칙이 명시됨. |
@@ -72,7 +72,7 @@
   - 개발 중 발견된 미정의 예외 케이스는 gitignore된 로컬 `/docs`에 쓰는 것이 아니라, GitHub CLI(`gh issue create --repo <org>/spec-repo`)를 통해 원격 `spec-repo`의 GitHub Issue로 직접 발의한다.
 - **검수 실행 위치 원칙 ("각자 로컬 스킬 실행 + 중앙 CI 코드 테스트")**:
   - 별도 유료 외부 서버 구축 없이 **PO/PM, UIX 디자이너(핸드오프 검증), 개발자가 각자 로컬 환경에서 스킬을 실행**해 정합성을 맞춘다.
-  - GitHub 서버(CI)는 **결정론적 코드 검사(`check.sh`: 코드 스타일 + Prism 기반 OpenAPI 계약 테스트 + 임시 DB 병렬 테스트 + 도메인 계산기 정답 대조 + spec-repo 질문 Issue 조회를 통한 미종결 ASSUMPTION 주석 차단 검사 + hotfix 사후 동기화 기한 검증)**를 수행한다. 저장소 간 Issue 조회 권한(ENV-06)과 기한 값(ENV-23)은 온보딩 질문지로 정한다.
+  - GitHub 서버(CI)는 **결정론적 코드 검사(`check.sh`: 코드 스타일 + Prism 기반 OpenAPI 계약 테스트 + 임시 DB 병렬 테스트 + 도메인 계산기 정답 대조 + spec-repo 질문 Issue 조회를 통한 ASSUMPTION 주석 검사(main: Issue 없는 주석 차단) + 릴리스 시 미종결 ASSUMPTION 차단)**를 수행한다. 핫픽스 사후 동기화 기한은 병합을 막지 않고 GitHub Actions가 `hotfix-sync` Issue로 추적 · 알림한다. 저장소 간 Issue 조회 권한(ENV-06)과 기한 값(ENV-23)은 온보딩 질문지로 정한다.
   - **게이트 2층 원칙**: ① **CI 필수 체크**에는 같은 입력에 같은 결과가 나오는 검사(위 `check.sh` 항목)만 둔다. ② `/spec-check` 같은 AI 스킬 판정은 실행마다 결과가 달라질 수 있으므로 **PR 코멘트 리포트**로 남기고, 병합 여부는 리뷰어가 리포트를 보고 정한다. AI 판정을 CI 필수 체크로 걸지 않는다.
 
 ---
@@ -271,10 +271,10 @@ PO/PM, UIX 디자이너, 개발자가 각각 **여러 명(N:M:K)**인 조직에�
   - 처리: AI 에이전트는 가장 합리적인 기준을 세워 코드에 `// [ASSUMPTION: Q-SETT-142] 문구는 결제 취소로 임의 가정하고 진행` 주석을 달고 작업을 멈추지 않고 선진행한다.
   - **출구 조건 (Exit Gate)**:
     - 피처 작업 브랜치에서는 `/spec-check`가 이를 `🟡 가정 진행 (Pending)` 상태로 통과시켜 개발을 지속할 수 있다.
-    - **상위 브랜치(main) 병합(PR) 시**: CI가 코드 내 `// [ASSUMPTION: Q-ID]`의 번호로 spec-repo Issue 상태를 조회한다. 해당 질문이 PO/PM에 의해 정본에 반영되어 Issue가 `Closed: completed`(`state_reason == completed`)로 종결된 주석만 main 병합이 허용되며, 미해결(`OPEN`) · `not_planned` · `duplicate` 종결 건과 Issue를 조회할 수 없는 주석(발의 실패 포함)은 병합이 차단된다 (허용 조건은 ENV-27).
+    - **병합 · 릴리스 게이트 (2단계)**: CI가 코드 내 `// [ASSUMPTION: Q-ID]`의 번호로 spec-repo Issue 상태를 조회한다. ① **main 병합**: 미해결(`OPEN`)과 `completed` 주석은 통과, Issue가 없는 주석(`Q-PENDING`, 번호 조회 불가)과 `not_planned` · `duplicate` 종결 후 정리하지 않은 주석은 차단. ② **릴리스**(판별 방법 ENV-26): Issue가 `Closed: completed`(`state_reason == completed`)로 종결된 주석만 허용하고, 하나라도 미해결이면 릴리스를 막는다. 사소한 문구 가정이 PO/PM 답변을 기다리며 피처 PR을 묶지 않게 하되, 정본에 없는 가정이 운영에 나가지는 않게 하기 위함이다 (조건은 ENV-27).
 - **질문 종결(`completed` vs `not_planned` vs `duplicate`) 후 코드 내 `[ASSUMPTION: Q-ID]` 주석 정리 규칙**:
-  - **정본 반영 승인(`Closed: completed`)**: GitHub Issue가 정상 종결되어 main 병합이 허용된 주석은, 개발자 AI가 다음 `/dev-screen` 실행이나 정기 리팩토링 시(기한은 ENV-28) **`// [ASSUMPTION: Q-ID]` 주석을 제거하고 정본 정책 추적 주석(`// @policy POL-ID`)으로 교체**하여 정규 프로덕션 코드로 확정한다.
-  - **기각·미반영 종결(`Closed: not_planned`)**: 가정한 정책이 반려되었으므로, 개발자 AI는 **해당 임시 가정 코드를 즉시 삭제하거나 변경 전 상태로 되돌리고 `// [ASSUMPTION: Q-ID]` 주석을 함께 제거**하여 main 병합 차단을 해소한다.
+  - **정본 반영 승인(`Closed: completed`)**: GitHub Issue가 정상 종결되어 릴리스가 허용된 주석은, 개발자 AI가 다음 `/dev-screen` 실행이나 정기 리팩토링 시(기한은 ENV-28) **`// [ASSUMPTION: Q-ID]` 주석을 제거하고 정본 정책 추적 주석(`// @policy POL-ID`)으로 교체**하여 정규 프로덕션 코드로 확정한다.
+  - **기각·미반영 종결(`Closed: not_planned`)**: 가정한 정책이 반려되었으므로, 개발자 AI는 **해당 임시 가정 코드를 즉시 삭제하거나 변경 전 상태로 되돌리고 `// [ASSUMPTION: Q-ID]` 주석을 함께 제거**한다. 정리하지 않으면 main 병합과 릴리스가 모두 막힌다.
   - **중복 종결(`Closed: duplicate`)**: 기존 질문과 중복되어 닫힌 경우, 코드 내 `// [ASSUMPTION: Q-ID]`를 **먼저 발의된 원본 질문의 Q-ID로 교체**하여 원본 질문의 해결·종결 상태를 따르도록 한다.
 
 ##### 3. 정본 반영 연동 종결 규칙 (Drift 원천 차단)
@@ -299,7 +299,7 @@ PO/PM, UIX 디자이너, 개발자가 각각 **여러 명(N:M:K)**인 조직에�
 | :---: | :--- | :--- | :--- |
 | **Level 1 (Full Track)** | • 신규 화면 추가<br>• 정책 변경으로 **화면 UI 요소와 비즈니스 로직이 함께 바뀔 때** | `PO/PM 요구사항 정의 (/doc-update)` ➔ `UIX/개발 도메인별 작업 지시서(TASK-*.md) 배포` ➔ `Figma 반영` ➔ `개발자 (/dev-screen)` ➔ `양방향 검수 (/spec-check)` | 모든 게이트 정상 적용 (모든 검증 `✅ 일치` 필수) |
 | **Level 2 (Logic & Patch Fast-Track)** | • 화면 UI 변경 없이 **정산 수식·할인율·유효성 조건·DB 로직만 바뀔 때**<br>• 기 배포된 프로덕션 단순 오탈자 정기 패치 | `PO/PM 요구사항 정의 (/doc-update)` ➔ `UIX 단계 생략 (개발 작업 지시서만 생성)` ➔ `개발자 (/dev-screen)` ➔ `정본 검수 (/spec-check)` | UI 검수 생략, 비즈니스/API 계약 검증 통과 필수 |
-| **Level 3 (Micro / Hotfix)** | • **운영 긴급 장애(Hotfix) 선조치**<br>• 운영 책임자(온콜 · 테크리드, ENV-47)가 장애로 선언한 건만 | 선(先) 긴급 코드 수정 및 핫픽스 배포 ➔ 후(後) **`/doc-update --sync-from-code`**로 정본 사후 동기화 | • `hotfix` 라벨 PR에 한해 AI 리포트의 `⚠️ 임의 구현 (Untracked)` 경고를 리뷰어가 예외 승인하여 선배포 가능 (`/spec-check --hotfix`는 리포트에 핫픽스 표시를 단다)<br>• **사후 출구 조건 및 기한 (기본값)**: hotfix PR 병합 완료 시점부터 영업일 3일(ENV-23) 이내에 정본 사후 동기화 PR이 병합되지 않으면 다음 정기 릴리스(판별 방법 ENV-26)의 main 병합을 자동 차단(ENV-25)<br>• 영업일은 주말을 제외해 세며, 공휴일 출처(ENV-24)가 연동되면 공휴일도 제외<br>• 사후 동기화 PR 본문에 원본 hotfix PR URL을 적어 CI가 기한을 추적 |
+| **Level 3 (Micro / Hotfix)** | • **운영 긴급 장애(Hotfix) 선조치**<br>• 운영 책임자(온콜 · 테크리드, ENV-47)가 장애로 선언한 건만 | 선(先) 긴급 코드 수정 및 핫픽스 배포 ➔ 후(後) **`/doc-update --sync-from-code`**로 정본 사후 동기화 | • `hotfix` 라벨 PR에 한해 AI 리포트의 `⚠️ 임의 구현 (Untracked)` 경고를 리뷰어가 예외 승인하여 선배포 가능 (`/spec-check --hotfix`는 리포트에 핫픽스 표시를 단다)<br>• **사후 동기화 기한 (기본값)**: hotfix PR 병합 시 GitHub Actions가 spec-repo에 `hotfix-sync` Issue를 자동 생성해 담당 PO/PM에게 배정한다. 병합 완료 시점부터 영업일 3일(ENV-23) 안에 정본 사후 동기화 PR이 머지되지 않으면 담당 PO/PM에게 알림을 다시 보내고 리드 PO/PM · 테크리드에게 에스컬레이션한다. **개발 병합은 막지 않는다**(ENV-25, 팀이 원하면 차단으로 바꿀 수 있음)<br>• 영업일은 주말을 제외해 세며, 공휴일 출처(ENV-24)가 연동되면 공휴일도 제외<br>• 사후 동기화 PR 본문에 원본 hotfix PR URL과 `hotfix-sync` Issue 번호를 적어 Actions가 기한을 추적 |
 
 > **경로 중복 방지 규칙**: 개발 도중 발견된 경미한 문구/UI 분기는 L3가 아닌 **`ASSUMPTION 선진행 경로`**로 처리하고, 기 배포된 단순 오탈자는 **`Level 2 정기 패치`**로 처리한다. L3는 오직 '운영 장애 긴급 선조치'에만 한정 적용한다.
 
@@ -479,8 +479,8 @@ description: 동기화된 LATEST_TASK.md 인덱스를 읽어 해당 지시서와
    - **단순 문구/정렬/경미한 UI 분기 (Non-blocking)**: `gh issue create --repo <org>/spec-repo --title "[<도메인>] <제목>" --label "domain:<도메인>" --label "assumption-question"`을 발의하고, 코드에 `// [ASSUMPTION: Q-ID] <가정 내용>` 주석을 달고 작업을 중단하지 않고 선진행한다 (`🟡 가정 진행 (Pending)` 상태).
    - **웹훅/gh 호출 실패 시**: 에이전트는 로컬 `tmp/questions-failed/` 큐에 에러 로그를 남기고 터미널에 경고를 출력하며 다음 실행 시 재시도한다. 번호를 받지 못한 동안에는 `// [ASSUMPTION: Q-PENDING] <제목>`으로 적고, 재시도가 성공하면 번호로 바꾼다. CI는 `Q-PENDING`을 항상 차단한다.
 2. **질문 종결(`completed` vs `not_planned` vs `duplicate`) 후 코드 처리**:
-   - **정본 반영 승인(`Closed: completed`)**: GitHub Issue가 `completed`로 정상 종결된 주석은 main 병합이 허용되며, 개발자 AI는 다음 화면 작업 시 코드의 `// [ASSUMPTION: Q-ID]` 주석을 제거하고 확정된 정본 정책 주석(`// @policy POL-ID`)으로 교체한다.
-   - **기각·미반영 종결(`Closed: not_planned`)**: 가정한 정책이 반려되었으므로, 해당 임시 가정 코드를 즉시 삭제하거나 변경 전 코드로 되돌린 뒤 `// [ASSUMPTION: Q-ID]` 주석을 함께 제거하여 main 병합 차단을 해소한다.
+   - **정본 반영 승인(`Closed: completed`)**: GitHub Issue가 `completed`로 정상 종결된 주석은 릴리스가 허용되며, 개발자 AI는 다음 화면 작업 시 코드의 `// [ASSUMPTION: Q-ID]` 주석을 제거하고 확정된 정본 정책 주석(`// @policy POL-ID`)으로 교체한다.
+   - **기각·미반영 종결(`Closed: not_planned`)**: 가정한 정책이 반려되었으므로, 해당 임시 가정 코드를 즉시 삭제하거나 변경 전 코드로 되돌린 뒤 `// [ASSUMPTION: Q-ID]` 주석을 함께 제거한다. 정리하지 않으면 main 병합과 릴리스가 모두 막힌다.
    - **중복 종결(`Closed: duplicate`)**: 기존 질문과 중복으로 종결된 경우, 주석의 Q-ID를 먼저 발의된 원본 Issue의 Q-ID로 교체하여 원본 질문의 해결·종결 여부를 추적한다.
 
 ## Step 4. 셀프 대조(`/spec-check`) 및 프리체크(`check.sh`)
@@ -518,7 +518,7 @@ description: 특정 화면 코드 또는 변경분을 Root PRD(비즈니스 규�
 | :---: | :--- | :--- |
 | **`❌ 위반/누락 (Mismatch)`** | • 정본에 명시된 필드·계산식·상태값·POL-* 규칙이 코드에 누락되거나 다르게 구현됨<br>• OpenAPI 스펙 계약 테스트(기본 Prism, 도구는 ENV-32) 실패<br>• Figma 시안에 있는 필수 UI 요소가 뷰 코드에 누락됨 | **개발자 코드 수정 필수** (계약 테스트 · 계산기 실패는 CI 차단, 그 밖은 리뷰어 반려 사유) |
 | **`⚠️ 임의 구현 (Untracked)`** | • 정본이나 OpenAPI 스펙에 없는 비즈니스 규칙·임의 상태 분기가 질문 등록 없이 코드에 포함됨<br>• UIX 디자이너의 Figma 컴포넌트 구조를 임의 변형함 | **개발자 즉시 제거 또는 사후 승인 요청** (리뷰어 반려 사유) |
-| **`🟡 가정 진행 (Pending)`** | • 비차단 질문에 대해 `// [ASSUMPTION: Q-ID]` 주석을 명시하고 선진행한 상태<br>• 작업 브랜치에서는 통과되나 **main 병합 시 질문 Issue가 `completed`로 종결되지 않은 주석이 남아 있으면 병합 차단** (`completed` 종결 주석만 병합 허용) | **피처 개발 지속 가능 / main 병합 전 PO 정본 반영 및 질문 `completed` 종결 필수** |
+| **`🟡 가정 진행 (Pending)`** | • 비차단 질문에 대해 `// [ASSUMPTION: Q-ID]` 주석을 명시하고 선진행한 상태<br>• **main 병합은 허용**되나 **릴리스 시 질문 Issue가 `completed`로 종결되지 않은 주석이 남아 있으면 릴리스 차단** (Issue 없는 `Q-PENDING`은 main 병합도 차단) | **피처 개발 · main 병합 지속 가능 / 릴리스 전 PO 정본 반영 및 질문 `completed` 종결 필수** |
 | **`❓ 정본/시안 미정의 (Missing)`** | • 개발 중 발견된 엣지 케이스로, GitHub Issue(`blocking-question`)가 발의되어 작업이 멈춘 상태 | **질문 Issue 검토 ➔ PO/PM 정본 보완 및 `Closed: completed` 종결 대기** |
 | **`✅ 일치 (Validated)`** | Root SSOT 비즈니스 규칙, Visual SSOT Figma 컴포넌트, Code SSOT OpenAPI 스키마가 실제 코드 및 테스트와 모두 일치함 | **통과 (PR 병합 승인)** |
 ```
@@ -536,7 +536,7 @@ description: 특정 화면 코드 또는 변경분을 Root PRD(비즈니스 규�
 3. **[UIX 디자이너] 화면 상태 매트릭스를 완비하고 `Ready for Dev`로 확정한다**
    - 와이어프레임이 없는 대신 기본 5대 상태(정상·로딩·빈화면·오류·권한없음) 및 도메인 특화 상태(부분실패 등)를 시안에 완비하고, "미바인딩 값 0개, Detach 인스턴스 0개" 린트를 통과한 시안만 `Ready for Dev`로 올린다.
 4. **[개발자] `Blocking` 질문은 대기하고, 단순 분기는 `[ASSUMPTION:]` 태그를 달고 선진행한다**
-   - 금액·권한·상태전이 등 비즈니스 핵심 규칙 공백은 즉시 멈추고 spec-repo에 GitHub Issue(`blocking-question`)로 올린다. 단순 문구·정렬은 `// [ASSUMPTION: Q-ID]` 태그를 달고 코딩을 선진행(`🟡 가정 진행 (Pending)`)하되, main 병합 전 모든 주석의 질문 Issue가 PO/PM 정본 반영을 거쳐 `completed`로 종결되어야만 병합이 통과된다 (`not_planned`는 가정 코드 제거, `duplicate`는 원본 Q-ID로 교체).
+   - 금액·권한·상태전이 등 비즈니스 핵심 규칙 공백은 즉시 멈추고 spec-repo에 GitHub Issue(`blocking-question`)로 올린다. 단순 문구·정렬은 `// [ASSUMPTION: Q-ID]` 태그를 달고 코딩을 선진행(`🟡 가정 진행 (Pending)`)한다. main 병합은 허용되지만, 릴리스 전에는 모든 주석의 질문 Issue가 PO/PM 정본 반영을 거쳐 `completed`로 종결되어야 한다 (`not_planned`는 가정 코드 제거, `duplicate`는 원본 Q-ID로 교체).
 5. **[에이전트 거버넌스] `AGENTS.md` 헌법을 준수하며, 임의로 정본과 다른 규칙을 창작하지 않는다**
    - 모든 AI 에이전트는 Root SSOT를 절대 기준으로 삼으며, 모호한 요구사항은 임의로 지어내지 않고 spec-repo에 질문 GitHub Issue로 발의하여 인간의 승인을 받는다.
 6. **[리드 PO/PM · 테크리드] 프로젝트 설정값은 `agentic-env.yaml`로만 바꾼다**

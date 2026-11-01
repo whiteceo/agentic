@@ -69,9 +69,9 @@
 | :--- | :--- | :--- | :--- | :---: | :--- | :--- |
 | ENV-23 | `HOTFIX_SYNC_SLA` | 핫픽스 병합 후 정본 사후 동기화 기한은? (영업일 수, 기산 시점) | hotfix PR 병합 완료 시점부터 평일 3일 | 필수 | 리드 PO/PM · 테크리드 | 1.2, 1.4-(4) |
 | ENV-24 | `HOLIDAY_CALENDAR` | 영업일 계산에 쓸 공휴일 출처는? (사내 캘린더 API / 저장소 JSON / 없음) | 연동 전에는 주말만 제외 | 권장 | 테크리드 | 1.4-(4), 검토로그 1.5-(2) |
-| ENV-25 | `HOTFIX_SLA_PENALTY` | 기한을 넘기면 무엇을 막는가? (다음 정기 릴리스 병합 / 모든 main 병합 / 경고만) | 다음 정기 릴리스 main 병합 자동 차단 | 권장 | 테크리드 | 1.4-(4) |
-| ENV-26 | `RELEASE_CADENCE` | "정기 릴리스"의 주기와 판별 방법은? (릴리스 브랜치 · 태그 · 라벨) | 미정 (본문에 "다음 정기 릴리스"만 있음) | 필수 | 테크리드 | 1.4-(4) |
-| ENV-27 | `ASSUMPTION_GATE` | `[ASSUMPTION: Q-ID]` 주석의 병합 허용 조건은? | Issue가 `completed`로 종결된 것만 허용 (OPEN · `not_planned` · `duplicate` · 조회 불가는 차단) | 권장 | 리드 PO/PM · 테크리드 | 1.4-(2) 2, 3.5 |
+| ENV-25 | `HOTFIX_SLA_PENALTY` | 기한을 넘기면 어떻게 하는가? (알림 · 에스컬레이션만 / 다음 릴리스 차단 / 모든 main 병합 차단) | 알림 · 에스컬레이션만 (담당 PO/PM 재알림 → 리드 PO/PM · 테크리드) | 권장 | 테크리드 | 1.4-(4) |
+| ENV-26 | `RELEASE_CADENCE` | 릴리스의 주기와 판별 방법은? (릴리스 브랜치 · 태그 · 라벨) — ASSUMPTION 릴리스 게이트가 이 시점에 걸린다 | 미정 | 필수 | 테크리드 | 1.4-(4) |
+| ENV-27 | `ASSUMPTION_GATE` | `[ASSUMPTION: Q-ID]` 주석을 어느 시점에 막는가? | main 병합: `OPEN` · `completed` 허용, `Q-PENDING` · 조회 불가 · 미정리 `not_planned`/`duplicate` 차단 / 릴리스: `completed`만 허용 | 권장 | 리드 PO/PM · 테크리드 | 1.4-(2) 2, 3.5 |
 | ENV-28 | `ASSUMPTION_CLEANUP_WINDOW` | `completed` 종결 후 주석을 `@policy`로 바꾸는 기한은? (다음 `/dev-screen` / N일 / 스프린트 끝) | 다음 `/dev-screen` 실행 또는 정기 리팩토링 시 | 권장 | 테크리드 | 1.4-(2) 2, 3.4 Step 3 |
 | ENV-29 | `CONTRACT_APPROVAL_RULE` | `contracts/openapi.yaml` 변경에 필요한 승인 수는? (FE n명 AND BE n명) | FE 리드 1명 이상 AND BE 리드 1명 이상 | 권장 | 테크리드 | 1.2.1-3, 3.2 |
 
@@ -156,9 +156,10 @@ questions:
 gates:
   hotfix_sync_business_days: 3       # ENV-23
   holiday_calendar: none             # ENV-24  none | <url> | <path.json>
-  hotfix_sla_penalty: block_next_release  # ENV-25
+  hotfix_sla_penalty: notify_escalate     # ENV-25  notify_escalate | block_next_release | block_main
   release_detect: <tag|branch|label> # ENV-26
-  assumption_allow: [completed]      # ENV-27
+  assumption_main_allow: [open, completed]   # ENV-27
+  assumption_release_allow: [completed]
   contract_approvals: {fe: 1, be: 1} # ENV-29
 ci:
   platform: github-actions           # ENV-30

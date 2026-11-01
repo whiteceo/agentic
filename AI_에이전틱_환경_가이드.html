@@ -1467,7 +1467,7 @@
               <text x="378" y="116" fill="var(--svg-sub)" font-size="10.5">/spec-check --hotfix</text>
               <text x="378" y="134" fill="#6EE7B7" font-size="10.5" font-weight="700">선배포 예외 허용</text>
               <text x="378" y="152" fill="var(--svg-sub)" font-size="10.5">영업일 3일 내 정본 동기화</text>
-              <text x="378" y="170" fill="var(--svg-sub)" font-size="10.5">미완료 시 릴리스 병합 차단</text>
+              <text x="378" y="170" fill="var(--svg-sub)" font-size="10.5">기한 초과 시 담당자 에스컬레이션</text>
             </g>
           </svg>
         </div>
@@ -1696,7 +1696,7 @@
             <tr>
               <td><strong>가정 진행</strong><br><span style="font-size:11px;color:var(--text-muted);">🟡 Pending</span></td>
               <td><strong>검수 5대 등급 (임시 선진행)</strong></td>
-              <td>비차단 질문에 대해 <code>[ASSUMPTION: Q-ID]</code> 주석을 달고 개발을 선진행한 상태. 피처 브랜치에서는 허용되나 main 병합 시 질문 Issue가 <code>completed</code>로 종결되지 않은(OPEN · not_planned · duplicate) 주석이 남아 있으면 병합이 차단됨.</td>
+              <td>비차단 질문에 대해 <code>[ASSUMPTION: Q-ID]</code> 주석을 달고 개발을 선진행한 상태. main 병합까지는 허용되며, 릴리스 시점에 질문 Issue가 <code>completed</code>로 종결되지 않은 주석이 남아 있으면 릴리스가 차단됨 (Issue가 없는 <code>Q-PENDING</code>은 main 병합도 차단).</td>
             </tr>
             <tr>
               <td><strong>화면 상태 매트릭스</strong><br><span style="font-size:11px;color:var(--text-muted);">Screen State Matrix</span></td>
@@ -1731,7 +1731,7 @@
             <tr>
               <td><strong>Fast-Track (L1~L3) &amp; Hotfix 게이트</strong></td>
               <td><strong>변경 등급별 경로 &amp; 핫픽스 게이트</strong></td>
-              <td>신규/대규모(L1) · UI 무변동 로직 및 단순 패치(L2, UIX 생략) · 운영 긴급 장애(L3, <code>/spec-check --hotfix</code> 선조치 후 hotfix PR 병합 완료일로부터 영업일 3일(기본값, 온보딩 질문지에서 조정) 이내 사후 동기화 출구조건).</td>
+              <td>신규/대규모(L1) · UI 무변동 로직 및 단순 패치(L2, UIX 생략) · 운영 긴급 장애(L3, <code>/spec-check --hotfix</code> 선조치 후 hotfix PR 병합 완료일로부터 영업일 3일(기본값, 온보딩 질문지에서 조정) 이내 사후 동기화, 초과 시 담당자 에스컬레이션).</td>
             </tr>
             <tr>
               <td><strong>검수 5대 등급</strong></td>
