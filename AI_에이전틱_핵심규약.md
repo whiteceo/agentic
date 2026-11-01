@@ -3,7 +3,7 @@
 
 > **이 문서는 spec-repo와 app-repo 루트에 `AGENTS.md`로 그대로 설치된다.** 모든 AI(Claude Code · 안티그래비티 등)가 매 세션 읽는 유일한 규약이다.
 > 목적은 두 가지다. ① 여러 사람이 각자 AI를 써도 **하나의 정본**으로 흘러 충돌이 없게 한다. ② AI가 **필요한 부분만** 읽어 토큰을 아낀다.
-> 프로젝트 설치는 `AI_에이전틱_프로젝트_설치서.md`(세팅 담당, 1회), 새로 합류한 사람의 준비는 `AI_에이전틱_합류_안내.md`(1회)를 따른다. 일상 작업 중에는 그 두 문서를 다시 읽지 않는다.
+> 프로젝트 설치는 규약 원본 저장소(https://github.com/whiteceo/agentic)의 `AI_에이전틱_프로젝트_설치서.md`(세팅 담당, 1회), 새로 합류한 사람의 준비는 같은 저장소의 `AI_에이전틱_합류_안내.md`(1회)를 따른다. 두 문서는 프로젝트 저장소에 설치하지 않으며, 일상 작업 중에는 다시 읽지 않는다.
 > 프로젝트별 값(저장소 · 도메인 · 담당자 등)은 spec-repo 루트의 `agentic-env.yaml`을 따른다.
 
 ## 1. 기준의 순서
@@ -30,9 +30,9 @@ PO/PM 결정 → 정본 PR(POL-ID) → TASK 파일 → 구현(AI는 요약본만
 | 질문 ID | `Q-<도메인>-<Issue번호>` | spec-repo Issue를 먼저 만들고 받은 번호를 쓴다. AI가 번호를 지어내지 않는다 |
 | 작업 지시서 | `docs/changes/<도메인 폴더>/TASK-<도메인>-YYYYMMDD-<hash>.md` | 지시 1건 = 파일 1개. 해시는 `scripts/new-id.sh`가 만든다 |
 
-- **TASK frontmatter**: `id` · `domain` · `ui_change`(yes/no) · `status`(OPEN/DONE) · `assignee`(GitHub 계정들) · `screen_ids` · `pol_ids`. 형식은 설치서 5절.
+- **TASK frontmatter**: `id` · `domain` · `ui_change`(yes/no) · `status`(OPEN/DONE) · `assignee`(GitHub 계정들) · `screen_ids` · `pol_ids` · `created_at`. 형식은 설치서 5절.
 - **정본 `[B]` 화면 명세 표**: 화면코드 · 화면명 · Figma URL · Ref POL · 화면 상태. 정책 본문은 `[C]`에 한 번만 쓰고, 제목 바로 위에 `<a id="pol-sett-005"></a>` 같은 고정 앵커를 둔다.
-- **색인은 커밋하지 않는다**: `canon_index.md`(화면 → 정본 절 · Figma URL)와 `open_tasks.md`(열린 TASK 목록)는 `scripts/sync-spec.sh`가 정본을 받을 때 로컬 `/docs`에 만든다. 여러 사람이 같은 색인 파일을 고쳐 충돌하는 일을 없애기 위해서다.
+- **색인은 커밋하지 않는다**: `canon_index.md`(화면 → 정본 절 · Figma URL)와 `open_tasks.md`(열린 TASK 목록)는 `scripts/sync-spec.sh`가 정본을 받을 때 로컬 `/docs`에 만든다. `open_tasks.md`만은 `spec.lock`이 아니라 spec-repo main의 최신 TASK로 만든다. 그래야 새 지시서가 정본 버전을 올리기 전에도 보인다. 여러 사람이 같은 색인 파일을 고쳐 충돌하는 일을 없애기 위해서다.
 - **정본 버전 고정**: app-repo의 `spec.lock`에 기준 spec-repo 커밋을 적고, `sync-spec.sh`와 CI는 그 버전만 받는다. 정본을 올릴 때는 `spec.lock`만 바꾸는 PR(`chore: bump spec`)을 따로 연다.
 
 ## 4. 질문
@@ -45,16 +45,16 @@ PO/PM 결정 → 정본 PR(POL-ID) → TASK 파일 → 구현(AI는 요약본만
 
 ## 5. 관문 (자동 검사와 사람 판단)
 
-| 관문 | 무엇을 | 누가 |
+| 관문 | 무엇을 | 운영 |
 | :--- | :--- | :--- |
 | `check` (CI 필수 체크) | 린트 · 테스트, `[BLOCKED` 0개, POL 번호 중복 · 미예약 0개 | 같은 입력이면 같은 결과가 나오는 검사만 둔다 |
-| `check --release` (배포 작업 첫 단계) | `[ASSUMPTION` 0개 | 막히면 정리하고 배포 실행을 다시 돌린다(태그를 다시 찍지 않음) |
+| `check --release` (배포 작업 첫 단계) | `[ASSUMPTION` 0개 | 막히면 정리 PR을 병합한 뒤 새 커밋으로 배포를 새로 시작한다(태그 방식이면 새 태그). 실패한 실행을 다시 돌리면 같은 커밋을 다시 검사하므로 통과하지 않는다 |
 | `/spec-check` 리포트 | 정본 · 계약 · 시안과 코드 대조, 5등급 판정 | AI 판정은 실행마다 다를 수 있어 PR 코멘트로만 남기고, **병합은 리뷰어가 정한다** |
 
 ## 6. 변경 크기와 핫픽스
 
 - TASK의 `ui_change: yes`면 디자이너가 시안을 확정(`Ready for Dev`, 화면 상태 5종: 정상 · 로딩 · 빈 화면 · 오류 · 권한 없음)한 뒤 구현한다. `no`면 디자인 단계를 건너뛴다.
-- **핫픽스**: 운영 책임자(`agentic-env.yaml`)가 장애로 선언한 건만 `hotfix` 라벨로 먼저 병합 · 배포한다. 병합한 사람이 spec-repo에 `hotfix-sync` Issue를 올려(AI가 대신 써 줌) 도메인 담당자의 백로그에 넣고, 담당자가 `/doc-update --sync-from-code`로 정본을 사후 개정한다.
+- **핫픽스**: 운영 책임자(`agentic-env.yaml`)가 장애로 선언한 건만 app-repo PR에 `hotfix` 라벨을 달아 먼저 병합 · 배포한다. main에는 아직 정리하지 않은 가정이 있을 수 있으므로, 핫픽스는 직전 릴리스 지점에서 브랜치를 따서 고치고 그 브랜치에서 배포한 뒤 main에도 병합한다. 병합한 사람이 spec-repo에 `hotfix-sync` Issue를 올려(AI가 대신 써 줌) 도메인 담당자의 백로그에 넣고, 담당자가 `/doc-update --sync-from-code`로 정본을 사후 개정한다.
 - 개발 중 발견한 사소한 문구는 핫픽스가 아니라 가정 진행(4-3)으로, 이미 배포된 오탈자는 일반 TASK로 처리한다.
 
 ## 7. 읽기 범위 (토큰)
@@ -94,4 +94,4 @@ PO/PM 결정 → 정본 PR(POL-ID) → TASK 파일 → 구현(AI는 요약본만
 | `/dev-screen` | FE · BE | 맡은 TASK 구현, 질문 분기, `check` 실행 | app-repo |
 | `/spec-check` | 개발자 · 리뷰어 | 정본 대조 리포트(파일 수정 없음) | app-repo |
 
-원문은 이 저장소의 `skills/<이름>/SKILL.md`이며, 설치 때 위 위치로 복사한다. 디자인 시스템 · 계약 테스트 · 계산기 · 메신저 알림 같은 확장은 `AI_에이전틱_선택_부록.md`에 있고, `agentic-env.yaml`에서 켠 것만 따른다.
+원문은 규약 원본 저장소(https://github.com/whiteceo/agentic)의 `skills/<이름>/SKILL.md`이며, 설치 때 위 위치로 복사한다. 디자인 시스템 · 계약 테스트 · 계산기 · 메신저 알림 같은 확장은 선택 부록에 있다. 켠 항목이 있으면 설치 때 spec-repo 루트에 `AI_에이전틱_선택_부록.md`로 복사되며, `agentic-env.yaml`에서 켠 것만 따른다.

@@ -9,17 +9,18 @@
 
 | 단계 | 할 일 | 누가 | 끝 확인 |
 | :---: | :--- | :--- | :--- |
-| **1** | GitHub 준비: 요금제 확인(비공개 저장소에서 필수 체크 · 저장소 규칙을 쓸 수 있는지), spec-repo · app-repo 생성, 팀(도메인 담당자 · FE 리드 · BE 리드), CI 토큰 발급과 Secrets 등록(3절) | 사람 | 두 저장소 존재, `gh secret list`에 토큰 이름 |
+| **1** | GitHub 준비: 요금제 확인(비공개 저장소에서 필수 체크 · 저장소 규칙을 쓸 수 있는지), spec-repo · app-repo 생성, 팀(도메인 담당자 · FE 리드 · BE 리드), 권한(아래), CI 토큰 발급과 Secrets 등록(3절) | 사람 | 두 저장소 존재, `gh secret list`에 토큰 이름 |
 | **2** | 설정 파일: 2절 질문에 답해 `spec-repo/agentic-env.yaml` 작성 | 세팅 담당 + 도메인 담당자 대표 | 필수 항목이 비어 있지 않음 |
-| **3** | spec-repo 골격: `docs/specs/`(빈 `_registry.yaml`), `docs/digest/`, `docs/changes/<도메인>/`, `contracts/`, `AGENTS.md`(= 핵심규약 원문), `.github/CODEOWNERS`, `.github/domain-assignees.json`, `.github/ISSUE_TEMPLATE/question.yml`, 라벨, `assign-issue` 워크플로, `scripts/new-id.sh`, `.claude/skills/`에 `doc-init` · `doc-rule` · `doc-update` | AI → 세팅 담당 리뷰 | 테스트 Issue 1건에 담당자가 자동 지정됨 |
+| **3** | spec-repo 골격: `docs/specs/`(빈 `_registry.yaml`), `docs/digest/`, `docs/changes/<도메인>/`, `contracts/`, `AGENTS.md`(= 핵심규약 원문), `.github/CODEOWNERS`, `.github/domain-assignees.json`, `.github/ISSUE_TEMPLATE/question.yml`, 라벨, `assign-issue` 워크플로, `scripts/new-id.sh`, `.claude/skills/`에 `doc-init` · `doc-rule` · `doc-update`, 선택 부록을 하나라도 켰으면 루트에 `AI_에이전틱_선택_부록.md` | AI → 세팅 담당 리뷰 | 개발자 계정으로 `gh issue create --label` 테스트 Issue 1건을 올려 라벨이 붙고 담당자가 자동 지정됨 |
 | **4** | app-repo 골격: `spec.lock`, `scripts/sync-spec.sh`, `scripts/check.sh`, `.gitignore`에 `/docs`, `AGENTS.md`, `check` 워크플로, `.claude/skills/`에 `dev-screen` · `spec-check` | AI → 세팅 담당 리뷰 | `sync-spec.sh`가 정본과 로컬 색인 2개를 만듦, 빈 프로젝트에서 `check` 통과 |
 | **5** | 정본 만들기: `/doc-init` (기획서가 있으면 정본화, 운영 코드만 있으면 역공학, 아무것도 없으면 인터뷰) | 도메인 담당자 | 정본 v1.0.0 PR 병합 |
 | **6** | 계약 만들기: `/doc-rule`로 `contracts/openapi.yaml` · `docs/contracts/00_ui_system.md` | FE · BE 리드 | 계약 PR 병합 |
-| **7** | 관문 고정: app-repo main에 `check` 필수 체크, 배포 작업 첫 단계에 `scripts/check.sh --release` | 사람 | 가정 주석이 남은 테스트 브랜치에서 배포 작업이 멈춤 |
+| **7** | 관문 고정: app-repo main에 `check` 필수 체크, 배포 작업 첫 단계에 `scripts/check.sh --release`. spec-repo main에 PR 필수 + 코드 소유자 리뷰 필수(승인자가 1명뿐이면 아래 예외) | 사람 | 가정 주석이 남은 테스트 브랜치에서 배포 작업이 멈춤, 정본 파일을 바꾼 PR에 도메인 담당자 리뷰가 요구됨 |
 | **8** | 시범 1건: `/doc-update` → `/dev-screen` → `/spec-check` → 병합 → 릴리스. 끝나면 `agentic-env.yaml`의 `setup_done: true` | 전원 | 가이드 "사례로 따라가기"가 재현됨 |
 
 - 5 · 6단계의 디자인 준비(토큰 · 컴포넌트 매핑)는 팀이 원할 때 선택 부록 1절을 따른다. 설치 순서를 막지 않는다.
-- **정본 승인자가 1명뿐이면**(PO/PM 대행 포함) spec-repo main의 필수 승인 수를 0으로 두고 본인이 병합한다. GitHub는 작성자가 자기 PR을 승인하지 못하게 하기 때문이다(신뢰 3·학습 지식). 승인자가 둘 이상이 되면 1로 올린다.
+- **권한**: spec-repo는 팀 전원(도메인 담당 · 디자인 · 개발) 쓰기, 그 밖의 파트(마케팅 · 운영 · CS)는 Triage. 쓰기나 Triage가 없으면 Issue의 라벨 · 담당자가 오류 없이 빠져 `assign-issue`가 돌지 않는다(신뢰 3·학습 지식). 정본 · 계약은 CODEOWNERS와 코드 소유자 리뷰 필수로 지키므로 쓰기 권한을 넓혀도 정본은 담당자 승인 없이 바뀌지 않는다.
+- **정본 승인자가 1명뿐이면**(PO/PM 대행 포함) spec-repo main의 필수 승인 수를 0으로 두고 코드 소유자 리뷰 필수도 끈 채 본인이 병합한다. GitHub는 작성자가 자기 PR을 승인하지 못하게 하기 때문이다(신뢰 3·학습 지식). 승인자가 둘 이상이 되면 승인 1과 코드 소유자 리뷰 필수를 켠다.
 - 테크리드가 없으면 저장소 관리 권한이 있는 사람이 세팅 담당을 맡는다. 그 전까지 도메인 담당자는 `/doc-init` 인터뷰 답을 로컬 초안으로 모아 둘 수 있다.
 
 ## 2. 설정 질문 (`agentic-env.yaml`)
@@ -66,13 +67,13 @@ setup_done: false
 
 ## 3. CI 토큰과 워크플로
 
-- **토큰 1개**: app-repo의 `check`가 `spec.lock` 시점의 비공개 spec-repo를 받아야 하므로, spec-repo **Contents 읽기** 권한이 있는 fine-grained 토큰(또는 GitHub App) 하나를 app-repo Secrets에 둔다. spec-repo가 공개면 필요 없다. 자동 커밋을 하는 워크플로가 없으므로 저장소 규칙의 우회 설정은 두지 않는다.
-- **라벨**: `domain:<약어>`(도메인마다), `blocking-question`, `assumption-question`, `legacy-question`, `hotfix`, `hotfix-sync`.
+- **토큰 1개**: app-repo의 `check`가 `spec.lock` 시점의 비공개 spec-repo를 받아야 하므로, spec-repo **Contents 읽기** 권한이 있는 fine-grained 토큰(또는 GitHub App) 하나를 app-repo Secrets에 둔다. spec-repo가 공개면 필요 없다.
+- **라벨**: spec-repo에 `domain:<약어>`(도메인마다), `blocking-question`, `assumption-question`, `legacy-question`, `hotfix-sync`. app-repo에 `hotfix`.
 
 | 워크플로 | 저장소 · 트리거 | 하는 일 |
 | :--- | :--- | :--- |
-| `assign-issue.yml` | spec-repo · `issues: opened, labeled` | `domain:` 라벨과 `domain-assignees.json`으로 담당자 지정. 권한 `issues: write` |
-| `check.yml` | app-repo · `pull_request`, `push: main` | `spec.lock` 정본을 받아 `scripts/check.sh` 실행. 권한 `contents: read` + CI 토큰 |
+| `assign-issue.yml` | spec-repo · `issues: opened, labeled` | `domain:` 라벨과 `domain-assignees.json`으로 담당자 지정. 권한 `issues: write`. 최소본은 5-7 |
+| `check.yml` | app-repo · `pull_request`, `push: main` | `spec.lock` 정본을 받아 `scripts/check.sh` 실행. 권한 `contents: read` + CI 토큰. 최소본은 5-8 |
 
 그 밖의 자동화(색인 커밋 · 질문 아카이브 · 상태 자동 전환 · 기한 알림)는 두지 않는다. 색인은 `sync-spec.sh`가 로컬에서 만들고, 질문 기록은 Issue 자체이며, 진행 관리는 도메인 담당자의 백로그와 주간 회의가 맡는다.
 
@@ -81,7 +82,7 @@ setup_done: false
 | 스크립트 | 하는 일 |
 | :--- | :--- |
 | `scripts/new-id.sh` (spec-repo) | TASK 해시(5자) 생성 |
-| `scripts/sync-spec.sh` (app-repo) | `spec.lock`의 커밋으로 정본 · 계약 · 요약본 · TASK를 `/docs`에 받고, `canon_index.md`(화면코드 → 정본 앵커 · Figma URL)와 `open_tasks.md`(`status: OPEN`인 TASK와 담당자)를 만든다 |
+| `scripts/sync-spec.sh` (app-repo) | `spec.lock`의 커밋으로 정본 · 계약 · 요약본(· 설치된 선택 부록)을 `/docs`에 받고 `canon_index.md`(화면코드 → 정본 앵커 · Figma URL)를 만든다. `open_tasks.md`(`status: OPEN`인 TASK와 담당자)는 spec-repo main의 최신 `docs/changes/`로 만든다. 새 TASK가 `spec.lock`을 올리기 전에도 보이게 하기 위해서다 |
 | `scripts/check.sh` (app-repo) | 린트 · 테스트, `[BLOCKED` 0개, 코드 · 테스트의 POL 번호가 `_registry.yaml`에 있고 중복이 없음. `--release`면 `[ASSUMPTION` 0개도 확인 |
 
 ## 5. 받아 둘 파일 형식
@@ -126,6 +127,57 @@ pol:
   POL-SETT-002: {status: retired, title: <정책명>}   # 결번은 지우지 않음
 ```
 
+- 상태는 `active` · `retired` 둘뿐이다. AI는 새 번호를 `active`로 정본 PR에 함께 넣고, PR이 병합되면 확정, 반려되면 PR과 함께 사라진다. `check.sh`는 대장에 있는 번호만 통과시킨다.
+
 **5. 담당자 매핑** (`.github/domain-assignees.json`): `agentic-env.yaml`의 `domains`에서 만든다. `{ "SETT": { "assignees": ["<github-id>"], "backup": "<github-id>" } }`
 
 **6. CODEOWNERS**: `docs/specs/` 아래 도메인 파일 → 해당 도메인 담당자, `contracts/` → FE 리드 팀과 BE 리드 팀.
+
+**7. `assign-issue.yml` 최소본** (spec-repo, 팀이 고쳐 써도 된다)
+
+```yaml
+name: assign-issue
+on:
+  issues:
+    types: [opened, labeled]   # 둘이 함께 와도 같은 담당자를 다시 지정할 뿐이다
+permissions:
+  issues: write
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
+          NUM: ${{ github.event.issue.number }}
+        run: |
+          d=$(echo "$LABELS" | jq -r '.[] | select(startswith("domain:")) | sub("domain:";"")' | head -1)
+          [ -z "$d" ] && exit 0   # domain 라벨이 없으면 아무것도 하지 않는다(디자이너 직접 요청 등)
+          who=$(jq -r --arg d "$d" '.[$d].assignees // [] | join(",")' .github/domain-assignees.json)
+          [ -z "$who" ] && { echo "::warning::$d 담당자 없음"; exit 0; }
+          gh issue edit "$NUM" --repo "$GITHUB_REPOSITORY" --add-assignee "$who"
+```
+
+**8. `check.yml` 최소본** (app-repo)
+
+```yaml
+name: check
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          GH_TOKEN: ${{ secrets.SPEC_REPO_TOKEN }}   # 2절 질문 11의 이름
+        run: bash scripts/sync-spec.sh
+      - run: bash scripts/check.sh
+```
+
+- 배포 작업은 첫 단계에서 `bash scripts/sync-spec.sh && bash scripts/check.sh --release`를 부르고, 실패하면 배포 잡이 시작되지 않게 `needs`로 묶는다.

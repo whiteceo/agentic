@@ -8,7 +8,7 @@ description: 자기에게 배정된 작업 지시서(TASK)의 화면을 요약�
 규칙은 `AGENTS.md`를 따른다.
 
 ## 1. 준비
-1. `bash scripts/sync-spec.sh`. 지시서가 더 새 정본을 요구하면 `spec.lock`만 바꾸는 PR부터 연다.
+1. `bash scripts/sync-spec.sh`. `open_tasks.md`는 spec-repo main 최신 기준이다. 고른 지시서가 `spec.lock`보다 새 정본을 요구하면 `spec.lock`만 바꾸는 PR부터 연다.
 2. `/docs/open_tasks.md`에서 `assignee`에 내 계정(`gh api user`)이 있는 TASK를 고른다. 없으면 다른 TASK를 집지 않고 "배정된 지시서 없음"으로 알리고 멈춘다.
 
 ## 2. 읽기 (이것만 읽는다)
