@@ -44,20 +44,21 @@
 
 | 요소 | 한 줄 설명 | 참고 |
 | :--- | :--- | :--- |
-| 실행 엔진(오케스트레이터) | Issue · TASK 같은 이벤트를 받아 에이전트를 실행하고 일을 나눔 | Anthropic, OpenAI |
+| 실행 엔진(오케스트레이터) | 질문 Issue나 작업 지시서가 올라오면 에이전트를 실행하고 일을 나눔(이 체계에 적용한 모습) | Anthropic, OpenAI |
 | 가드레일 · 사람 승인 | 입력 · 출력 검사, 위험한 작업은 사람이 승인 | OpenAI |
 | 보안 | 에이전트 신원 · 최소 권한 · 비밀값 관리 | OWASP |
 | 관측성 · 모니터링 | 에이전트 실행 추적과 로그 | OpenTelemetry |
 | 평가 | AI 결과 품질을 정해진 시나리오로 반복 측정 | Anthropic |
-| 비용 관리 | 토큰 사용량 측정과 한도 | OpenTelemetry |
+| 비용 관리 | AI 사용량(토큰) 측정과 한도. 사용량 기록 항목은 OpenTelemetry 생성형 AI 표준을 따름 | OpenTelemetry |
 | 도구 연결 표준 | MCP로 GitHub · Figma · 사내 시스템 연결 | MCP 명세 |
 | 기억 · 지식 색인 | 작업 간 기억과 정본 검색 | Anthropic |
-| 인프라 | 에이전트 실행 환경 · 샌드박스 배포와 관리 | — |
+| 인프라 | 에이전트 실행 환경 · 샌드박스 배포와 관리. 격리된 환경에서 먼저 시험 | Anthropic |
 
 참고 자료:
 - Anthropic, Building effective agents: https://www.anthropic.com/engineering/building-effective-agents
 - Anthropic, Demystifying evals for AI agents: https://www.anthropic.com/research/demystifying-evals-for-ai-agents
 - OpenAI, A practical guide to building agents: https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf
 - OpenTelemetry, AI Agent Observability: https://opentelemetry.io/blog/2025/ai-agent-observability/
+- OpenTelemetry, 생성형 AI 표준 속성(Semantic Conventions): https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/
 - OWASP Top 10 for Agentic Applications: https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/
 - Model Context Protocol 명세: https://modelcontextprotocol.io/specification/2026-07-28
