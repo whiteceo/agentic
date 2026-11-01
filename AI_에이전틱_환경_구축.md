@@ -3,6 +3,7 @@
 > **문서 용도**: 이 문서는 **AI 에이전트(Claude Code · 안티그래비티)**가 프로젝트 환경을 세팅하거나, 각자의 역할(**PO/PM** 정본 개정 / **UIX 디자이너** Figma 연동 / **개발자** 화면 구현 / 정본↔코드 대조 검수 / 레거시 역공학 문서화)을 수행할 때 직접 읽고 따르는 **AI 실행 명세서(Executable Spec)**다.
 > 사람(**PO/PM · UIX 디자이너 · 개발자**)에게 설명하고 브리핑하기 위한 시각 자료는 동일 폴더의 **`AI_에이전틱_환경_가이드.html`**을 사용한다.
 > 프로젝트마다 달라지는 SLA · 인프라 · 담당자 설정값은 동일 폴더의 **`AI_에이전틱_온보딩_질문지.md`**로 분리했다(0.1절).
+> 새 프로젝트에 세팅할 때는 **5절 세팅 런북**의 순서와 **5.2 워크플로 목록**을 따른다.
 
 ---
 
@@ -111,7 +112,7 @@
 - **운영 원칙**:
   - 기획이 변경되면 반드시 Root SSOT가 먼저 개정(`doc-update`)되어야 하며, UIX와 개발 파트의 모든 산출물은 Root SSOT로부터 파생된다.
   - Root SSOT에 정의되지 않은 상태값이나 비즈니스 로직을 디자인이나 코드에서 임의로 창작할 수 없으며, 발견 시 버그(`❌ 위반` 또는 `⚠️ 임의 구현`)로 간주된다.
-  - 단, 개발 중 발견된 경미한 UI 분기에 대해 `[ASSUMPTION: Q-ID]` 태그를 달고 선진행한 경우는 `🟡 가정 진행` 등급으로 분류하여 피처 브랜치 개발을 허용하되, 상위 브랜치(main) 병합 전에는 반드시 PO/PM이 정본에 반영하여 `✅ 일치`로 해소해야 한다.
+  - 단, 개발 중 발견된 경미한 UI 분기에 대해 `[ASSUMPTION: Q-ID]` 태그를 달고 선진행한 경우는 `🟡 가정 진행` 등급으로 분류하여 피처 브랜치 개발과 main 병합을 허용하되, 릴리스 전에는 반드시 PO/PM이 정본에 반영하여(질문 Issue `completed` 종결) `✅ 일치`로 해소해야 한다(1.4-(2) 2단계 게이트).
 
 #### 2. 좌측 날개: 시각 정본 (Visual SSOT) — UIX 디자인 시스템 & 확정 시안
 - **관행적 화면설계서(와이어프레임)의 완전 생략 원리**:
@@ -323,7 +324,7 @@ PO/PM, UIX 디자이너, 개발자가 각각 **여러 명(N:M:K)**인 조직에�
 | :--- | :--- | :--- | :--- |
 | **PO / PM**<br>(기획·정책 그룹) | • 비즈니스 요구사항 정의 및 정책 결정<br>• 로컬 AI에 `/doc-update`로 요구사항 정의 실행 (`POL-*` 채번 및 갱신) | • 기존 정책과의 정합성 체크, 변경 등급(L1~L3) 판별 및 영향받는 정본 절·화면코드 전수 스캔 (`POL-*` 추적)<br>• 정본 MD·계산기·색인·Digest·OpenAPI 일괄 개정 및 개정이력 기록<br>• **`docs/changes/<도메인>/TASK-*.md` 생성 및 `LATEST_TASK.md` 인덱스 갱신** | • AI가 스캔한 영향 범위 및 정본 개정이력(diff) 최종 승인 후 Git 푸시<br>• 웹훅으로 수신된 **질문 GitHub Issue 검토·결정 및 정본 반영, Closed 처리 후 docs/questions/ 아카이브** |
 | **UIX 디자이너**<br>(디자인 그룹) | • 변경 작업 지시서(`TASK-*.md`) 확인 (`L2 로직변경` 시 생략)<br>• Figma에서 `[화면코드]` 프레임 디자인, 화면 상태 매트릭스(기본 5대+도메인 특화) 확인 및 Design Token 적용 | • **Figma MCP 서버**가 확정된(`Ready for Dev`) 프레임의 구조·스타일·토큰·Code Connect 정보를 개발자 AI에게 실시간 공급 | • 완료된 프레임을 **`Ready for Dev`** 상태로 전환 (미바인딩 값 0개 린트 확인)<br>• **정본 `[B]`의 Figma Node URL 열 갱신 PR 제출 (PO/PM 승인)**<br>• 디자인 중 발견된 누락 상태는 질문 Issue 발의, 배포 후 `/spec-check` 시각 리포트 확인 |
-| **개발자**<br>(FE / BE 그룹) | • `sync-spec.sh` 실행 후 로컬 AI에 `/dev-screen` 실행 지시 | • **`LATEST_TASK.md` 인덱스에서 내 담당 화면코드 및 `POL-*` 자동 인식**<br>• 화면별 요약본(Digest, 6%) 로드 + Track A(표준 UI 템플릿) / Track B(Figma Code Connect) 결합 코딩<br>• 단위/기능 테스트 작성, Prism 기반 계약 검증, `check.sh` 및 `/spec-check` 자동 대조 | • 코딩 중 발견된 정책 공백은 등급 판별 후 **spec-repo에 질문 GitHub Issue 발의 또는 `// [ASSUMPTION: Q-ID]` 태그 달고 선진행**<br>• main 병합 전 ASSUMPTION 주석의 질문 Issue가 `completed`로 종결됐는지 확인 및 `/spec-check` `❌ 위반/누락 0건` 확인 후 PR 병합 |
+| **개발자**<br>(FE / BE 그룹) | • `sync-spec.sh` 실행 후 로컬 AI에 `/dev-screen` 실행 지시 | • **`LATEST_TASK.md` 인덱스에서 내 담당 화면코드 및 `POL-*` 자동 인식**<br>• 화면별 요약본(Digest, 6%) 로드 + Track A(표준 UI 템플릿) / Track B(Figma Code Connect) 결합 코딩<br>• 단위/기능 테스트 작성, Prism 기반 계약 검증, `check.sh` 및 `/spec-check` 자동 대조 | • 코딩 중 발견된 정책 공백은 등급 판별 후 **spec-repo에 질문 GitHub Issue 발의 또는 `// [ASSUMPTION: Q-ID]` 태그 달고 선진행**<br>• CI 통과(Issue 없는 `Q-PENDING` · `[BLOCKED]` 주석 0건)와 `/spec-check` 리포트 확인 후 PR 병합, 릴리스 전 ASSUMPTION 주석의 질문 Issue `completed` 종결 확인 |
 
 ---
 
@@ -541,3 +542,40 @@ description: 특정 화면 코드 또는 변경분을 Root PRD(비즈니스 규�
    - 모든 AI 에이전트는 Root SSOT를 절대 기준으로 삼으며, 모호한 요구사항은 임의로 지어내지 않고 spec-repo에 질문 GitHub Issue로 발의하여 인간의 승인을 받는다.
 6. **[리드 PO/PM · 테크리드] 프로젝트 설정값은 `agentic-env.yaml`로만 바꾼다**
    - SLA 기한 · 담당자 매핑 · 라벨 · 웹훅 · 승인 수 같은 설정값은 `AI_에이전틱_온보딩_질문지.md`로 정하고 `agentic-env.yaml` 수정 PR로만 바꾼다. 명세서 본문의 기본값을 프로젝트마다 고쳐 쓰지 않는다. 비밀값은 GitHub Secrets 이름만 기록한다.
+
+---
+
+## 5. 세팅 런북 (Setup Runbook)
+
+AI 에이전트가 새 프로젝트에 이 체계를 세팅할 때 아래 순서대로 실행한다. 각 단계는 **완료 확인**을 통과해야 다음 단계로 넘어간다. 값은 모두 `agentic-env.yaml`(0.1절)에서 읽고, 필수 항목이 비어 있으면 그 단계에서 멈추고 질문지 항목 번호를 보고한다. 사람이 해야 하는 작업(계정 · 권한 · 비밀값)은 AI가 대신하지 않고 할 일 목록으로 넘긴다.
+
+### 5.1 단계별 실행 절차
+
+| 단계 | 할 일 | 실행 주체 | 산출물 | 완료 확인 |
+| :---: | :--- | :--- | :--- | :--- |
+| **0** | 온보딩 질문지 작성 · `agentic-env.yaml` 확정 | 리드 PO/PM · 테크리드 | `spec-repo/agentic-env.yaml` | 질문지 **필수** 항목이 모두 채워짐 |
+| **1** | GitHub 기반 준비: `spec-repo` · `app-repo` 생성, 팀(ENV-11), 라벨(ENV-16), 브랜치 보호(ENV-04), 저장소 간 권한 GitHub App 설치 · Secrets 등록(ENV-06 · ENV-18) | 테크리드 (사람) | 두 저장소, 라벨, 팀, Secrets | `gh label list` · `gh secret list`로 이름 대조, App이 두 저장소에 설치됨 |
+| **2** | `spec-repo` 골격 생성: 1.2절 폴더 구조, `AGENTS.md`(4절 규약), `docs/specs/_registry.yaml`(빈 대장), `.github/CODEOWNERS`(ENV-10), `.github/domain-assignees.json`(ENV-09), `scripts/new-id.sh` | AI | 골격 커밋 1개 | 폴더 · 파일 존재, `new-id.sh`가 길이 ENV-14의 해시 출력 |
+| **3** | `spec-repo` 워크플로 5종 추가(5.2 표 W1~W5) | AI → 테크리드 리뷰 | `.github/workflows/*.yml` | 테스트 Issue 1건으로 W1 담당자 지정 · 알림, 닫기로 W2 아카이브 생성 확인 |
+| **4** | `app-repo` 골격: `spec.lock`, `scripts/sync-spec.sh`, `scripts/check.sh`(1.2 항목), `.gitignore`에 `/docs` · 실패 큐(ENV-20) 등록 | AI | 골격 커밋 1개 | `sync-spec.sh`가 `spec.lock` SHA의 정본을 받음, `check.sh` 빈 프로젝트에서 통과 |
+| **5** | `app-repo` 워크플로 4종 추가(5.2 표 W6~W9) | AI → 테크리드 리뷰 | `.github/workflows/*.yml` | 테스트 PR로 W6 통과 · 실패 각 1회, 더미 `hotfix` 라벨 PR로 W8 Issue 생성 확인 |
+| **6** | 스킬 설치: `spec-repo/.claude/skills/`에 `doc-init` · `doc-rule` · `doc-update`, `app-repo/.claude/skills/`에 `dev-screen` · `spec-check` (3절 원문) | AI | `SKILL.md` 5개 | 각 저장소에서 스킬 목록에 노출 |
+| **7** | 정본 · 계약 초기화: 신규는 `/doc-init`(초안), 레거시는 대상 도메인만 `/doc-init`(ENV-48 상한) → `/doc-rule` | AI → PO/PM 승인 | 정본 v1.0.0, `openapi.yaml`, `00_ui_system.md`, 색인 · 요약본 | PO/PM 승인 PR 머지, W3이 색인 생성 |
+| **8** | 시범 1사이클: 요구사항 1건으로 `/doc-update` → `/dev-screen` → `/spec-check` → 병합 → 릴리스 | 전 직군 | 시범 PR · 질문 Issue · 릴리스 1건 | 가이드 HTML "사례로 따라가기"의 6단계가 모두 재현됨 |
+| **9** | 게이트 고정: W6을 필수 상태 체크로, W7을 릴리스 필수 체크로 등록 | 테크리드 (사람) | 브랜치 보호 규칙 | 규칙 화면에서 필수 체크 이름 확인 |
+
+### 5.2 GitHub Actions 워크플로 목록 (9종)
+
+이름은 기본값이며 팀이 바꿀 수 있다(ENV-21). AI는 이 표에 없는 워크플로를 새로 만들지 않고, 필요하면 질문 Issue로 요청한다. 권한은 최소로 둔다.
+
+| ID | 파일 (저장소) | 트리거 | 권한 | 입력 → 출력 |
+| :---: | :--- | :--- | :--- | :--- |
+| **W1** | `assign-issue.yml` (spec-repo) | `issues: opened, labeled` | `issues: write` | `domain:*` 라벨 + `domain-assignees.json` → Assignee 지정, Blocking이면 웹훅 알림(ENV-18 · 19) |
+| **W2** | `archive-question.yml` (spec-repo) | `issues: closed` (질문 라벨) | `contents: write` | Issue 본문 · 라벨 · `state_reason` → `docs/questions/<도메인>/Q-<도메인>-<번호>.md` 커밋 |
+| **W3** | `build-index.yml` (spec-repo) | `push: main` (`docs/specs/**`, `docs/changes/**`) | `contents: write` | 정본 · 지시서 → `canon_index.md`, `LATEST_TASK.md` 재생성 커밋 |
+| **W4** | `registry-check.yml` (spec-repo) | `pull_request` (`docs/specs/**`, `docs/adr/**`) | `contents: read` | 변경된 POL · ADR 번호 → `_registry.yaml` 중복 · 미예약 시 실패 |
+| **W5** | `contract-approval.yml` (spec-repo) | `pull_request`, `pull_request_review` (`contracts/**`) | `pull-requests: read` + 조직 멤버 읽기 토큰 | 리뷰 목록 → FE 팀 · BE 팀 승인이 각각 ENV-29 이상이면 통과 (도입 초기 생략 가능, 1.2.1-3) |
+| **W6** | `check.yml` (app-repo) | `pull_request`, `push: main` | `contents: read` + spec-repo Issues 읽기(ENV-06) | `spec.lock` 정본 + 코드 → `check.sh` 전 항목, ASSUMPTION main 게이트(`Q-PENDING` · 조회 불가 · 미정리 `not_planned`/`duplicate` · `[BLOCKED]` 차단) |
+| **W7** | `release-gate.yml` (app-repo) | 릴리스 판별 이벤트(ENV-26: 태그 · 릴리스 브랜치 · 라벨) | `contents: read` + spec-repo Issues 읽기 | 코드의 모든 `[ASSUMPTION: Q-ID]` → 전부 `completed`일 때만 통과 |
+| **W8** | `hotfix-sync.yml` (app-repo) | `pull_request: closed`(병합 · `hotfix` 라벨) + 매일 `schedule` | spec-repo Issues 쓰기(ENV-06), 웹훅 Secrets | 병합 시 spec-repo에 `hotfix-sync` Issue 생성 · 배정, 기한(ENV-23 · 24) 초과 시 재알림 → 에스컬레이션(ENV-25). 병합은 막지 않음 |
+| **W9** | `task-status.yml` (app-repo) | `pull_request: closed`(병합) | spec-repo Contents 쓰기(ENV-06) | PR 본문의 `Task: TASK-...` → 해당 TASK `status: DONE` 커밋(W3이 인덱스 재생성) |

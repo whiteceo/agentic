@@ -30,7 +30,7 @@
 | ENV-03 | `APP_REPOS` | 개발 저장소는 몇 개이며 이름은 무엇인가? (FE · BE 분리 여부 포함) | `app-repo` 1개 (예: `example-app`) | 필수 | 테크리드 | 1.2 |
 | ENV-04 | `MAIN_BRANCH` | 병합 차단 게이트를 걸 기준 브랜치는 무엇인가? (`main` / `develop` / 릴리스 브랜치) | `main` | 권장 | 테크리드 | 1.2.1-1, 1.4-(2), 1.4-(4) |
 | ENV-05 | `SPEC_SYNC_METHOD` | app-repo가 정본을 받는 방식은? (스크립트 복사 / git submodule / 패키지) | `scripts/sync-spec.sh`로 `.gitignore`된 `/docs`에 복사, 기준 커밋은 `spec.lock`으로 고정 | 권장 | 테크리드 | 1.2, 3.4 Step 1 |
-| ENV-06 | `CROSS_REPO_AUTH` | app-repo CI가 spec-repo Issue를 읽을 권한은 무엇으로 줄 것인가? (GitHub App / 읽기 전용 PAT) · Secrets 이름은? | 미정 (기본 `GITHUB_TOKEN`은 다른 저장소 Issue를 못 읽을 수 있어 별도 권한 필요) | 필수 | 테크리드 · 보안 담당 | 1.2 (CI), 검토로그 1.5-(2) |
+| ENV-06 | `CROSS_REPO_AUTH` | app-repo 워크플로가 spec-repo에 접근할 권한을 무엇으로 줄 것인가? (GitHub App 권장 / fine-grained PAT) · Secrets 이름은? 필요한 권한: Issues **읽기**(ASSUMPTION · 릴리스 게이트), Issues **쓰기**(`hotfix-sync` Issue 생성 · 에스컬레이션 코멘트), Contents **쓰기**(TASK `status` 전환 커밋). 명세서 5.2 워크플로 표 참고 | 미정 (기본 `GITHUB_TOKEN`은 다른 저장소에 접근하지 못하므로 별도 권한 필요) | 필수 | 테크리드 · 보안 담당 | 1.2 (CI), 검토로그 1.5-(2) |
 
 ## 2. 도메인 · 담당자 매핑
 
@@ -124,7 +124,7 @@ repo:
   app_repos: [<app-repo>]            # ENV-03
   main_branch: main                  # ENV-04
   spec_sync: script                  # ENV-05  script | submodule | package
-  cross_repo_auth_secret: <SECRET_NAME>  # ENV-06  GitHub App 또는 읽기 전용 PAT
+  cross_repo_auth_secret: <SECRET_NAME>  # ENV-06  GitHub App 권장 (spec-repo Issues R/W, Contents W)
 domains:                             # ENV-07 · ENV-08 · ENV-09
   - code: SETT
     dir: settlement
