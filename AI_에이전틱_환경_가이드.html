@@ -259,7 +259,7 @@
     <div><b>1</b><span>최상위 비즈니스 정본</span></div>
     <div><b>5</b><span>표준 AI 스킬</span></div>
     <div><b>2층</b><span><span class="t" tabindex="0" data-tip="Continuous Integration(지속적 통합). 코드가 올라올 때마다 서버가 자동으로 검사를 돌리는 장치. 브랜드 CI(로고 · 정체성)와 다르다.">CI</span>(자동 검사) + AI 리포트</span></div>
-    <div><b>48</b><span>팀별 설정 항목</span></div>
+    <div><b>49</b><span>팀별 설정 항목</span></div>
   </div>
 </header>
 
@@ -478,7 +478,7 @@
   <h2>직군별로, 언제 · 무엇을 · 어디서</h2>
   <p class="lead">전달 · 대조 · 반복 검사는 스킬과 자동 검사가 맡습니다. 사람은 아래 상황이 생겼을 때 정해진 곳에서 정해진 일만 하면 됩니다.</p>
   <div class="roles">
-    <div class="role"><header><span class="lbl cc">PO / PM</span><h3>정의하고 결정한다</h3></header><p>Git을 몰라도 됩니다. 변경은 AI가 올리고, 나는 읽고 승인합니다.</p>
+    <div class="role"><header><span class="lbl cc">PO / PM</span><h3>정의하고 결정한다</h3></header><p>Git을 몰라도 됩니다. 변경은 AI가 올리고, 나는 읽고 승인합니다. 기획 담당이 없으면 누군가 <b>PO/PM 대행</b>으로 이 카드를 맡습니다(위임 기록 필수, 개발을 겸하면 자기 코드는 다른 사람이 승인).</p>
       <div class="sit"><h4>정책 · 요구사항이 생겼을 때</h4><dl><dt>언제</dt><dd>새 기획, 정책 변경, 회의 결정이 생겼을 때</dd><dt>무엇을</dt><dd>AI에게 바뀐 내용을 말로 설명하고 <code>/doc-update</code>를 실행해 영향 범위 · 변경 등급 제안을 받습니다. 맞으면 승인합니다.</dd><dt>어디서</dt><dd>Claude Code(데스크톱 앱 가능)에서 spec-repo 폴더를 열고</dd><dt>끝 확인</dt><dd>정본 개정 <span class="t" tabindex="0" data-tip="Pull Request(변경 검토 요청). &#39;이 변경을 합쳐 주세요&#39;라고 올리는 검토 요청서. 홍보(Press Relations)와 다르다.">PR</span>이 올라오고, 내가 GitHub 웹에서 <span class="t" tabindex="0" data-tip="변경 전후 차이를 줄 단위로 보여 주는 비교 화면.">diff</span>를 보고 승인 · 병합</dd></dl></div>
       <div class="sit"><h4>질문 알림이 왔을 때</h4><dl><dt>언제</dt><dd>메신저 · GitHub 알림으로 질문 Issue가 배정됐을 때 (Blocking은 당일)</dd><dt>무엇을</dt><dd>질문을 읽고 결정합니다. 결정은 반드시 AI에게 정본 수정으로 맡깁니다(메신저 답변만으로 끝내지 않음).</dd><dt>어디서</dt><dd>GitHub spec-repo의 Issues → 나에게 배정된 것</dd><dt>끝 확인</dt><dd>정본 수정 PR 머지 후 Issue를 <code>completed</code>로 닫음 (아카이브는 자동)</dd></dl></div>
       <div class="sit"><h4>릴리스 전</h4><dl><dt>언제</dt><dd>릴리스 일정 2~3일 전</dd><dt>무엇을</dt><dd>남아 있는 가정 진행(ASSUMPTION) 질문을 모두 정리합니다.</dd><dt>어디서</dt><dd>GitHub Issues에서 <code>assumption-question</code> 라벨 필터</dd><dt>끝 확인</dt><dd>열린 가정 질문 0건 → 릴리스 게이트 통과</dd></dl></div>
@@ -512,7 +512,7 @@
   <div class="phases">
     <div class="ph"><span class="no">P0</span><b>설정값 정하기</b><span class="who">리드 PO/PM + 테크리드</span>온보딩 질문지 → <code>agentic-env.yaml</code></div>
     <div class="ph"><span class="no">P1</span><b>저장소 · 자동화</b><span class="who">테크리드</span>저장소 · 권한 · 워크플로 · 스킬</div>
-    <div class="ph"><span class="no">P2</span><b>정본 만들기</b><span class="who">PO/PM</span><code>/doc-init</code>으로 기존 기획 · 코드를 정본화, 승인</div>
+    <div class="ph"><span class="no">P2</span><b>정본 만들기</b><span class="who">PO/PM 또는 대행</span><code>/doc-init</code>으로 기획 · 코드를 정본화. 아무것도 없으면 AI가 인터뷰로 초안 작성</div>
     <div class="ph"><span class="no">P3</span><b>계약 고정</b><span class="who">FE · BE 리드</span><code>/doc-rule</code>로 API 계약 · 화면 골격</div>
     <div class="ph par"><span class="no">P3 · 동시</span><b>디자인 준비</b><span class="who">UIX 리드</span>토큰 · 컴포넌트 매핑</div>
     <div class="ph"><span class="no">P4 → P5</span><b>시범 · 고정</b><span class="who">전원 → 테크리드</span>개인 세팅, 시범 1사이클, 게이트 고정</div>

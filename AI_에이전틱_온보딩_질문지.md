@@ -107,6 +107,7 @@
 | ENV-45 | `PLATFORM_API` | Option A를 쓸 경우 API 주소 · 인증 방식 · `project-meta.json` 위치는? | 경량 API 3종(POST 등록 · GET 조회 · PATCH 상태), 주소 미정 | 선택 | 사내 플랫폼 담당 | 1.4-(5) |
 | ENV-46 | `CONTEXT_LOAD_RULE` | 화면 작업 때 AI가 읽는 범위는? (Digest만 / Digest + 색인이 가리키는 정본 절) | Digest + `canon_index.md` 앵커가 가리키는 정본 절 | 권장 | 테크리드 | 3.4 Step 1 |
 | ENV-47 | `INCIDENT_DECLARER` | Level 3(핫픽스) 진입을 선언할 수 있는 사람 · 역할은? 장애 등급 기준은? | 운영 책임자(온콜 · 테크리드) | 필수 | 테크리드 · 운영 책임자 | 1.4-(4) |
+| ENV-49 | `SPEC_OWNERS` | 정본을 승인할 사람은 누구인가? 기획 담당이 따로 없으면 누가 PO/PM을 대행하는가(위임자 · 범위 · 개발 겸직 여부)? | 도메인별 PO/PM. 대행자는 위임자와 범위를 함께 기록, 개발 겸직 시 자기 코드 PR 자기 승인 금지 | 필수 | 대표 · 리드 PO/PM | 시작하기 C-Q1 · Q1-1 |
 | ENV-48 | `LEGACY_QUESTION_CAP` | 레거시 정본화(`/doc-init`) 1회에 도메인당 발의할 `legacy-question` 상한은? | 20건, 넘치면 묶음 Issue 1건 | 권장 | 리드 PO/PM | 3.1 |
 
 ---
@@ -174,6 +175,12 @@ incident:
   declarers: [<github-id>]           # ENV-47
 legacy:
   question_cap_per_domain: 20        # ENV-48
+spec_owners:                         # ENV-49
+  - domain: SETT
+    owner: <github-id>
+    acting: false                    # true면 PO/PM 대행
+    delegated_by: null               # 대행일 때 위임한 사람
+    also_developer: false            # 개발 겸직이면 코드 PR 다른 리뷰어 필수
 ```
 
 ---
