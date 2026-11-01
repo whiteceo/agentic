@@ -1073,7 +1073,7 @@
             <g transform="translate(24, 206)">
               <rect x="0" y="0" width="352" height="58" rx="10" fill="var(--svg-panel)" stroke="var(--svg-stroke)" />
               <text x="16" y="24" fill="#6EE7B7" font-size="12" font-weight="800">개발자 · Contract-First API 스키마 확인</text>
-              <text x="16" y="44" fill="var(--svg-sub)" font-size="11.5">00_domain_contracts.md 인터페이스 계약(Code SSOT)</text>
+              <text x="16" y="44" fill="var(--svg-sub)" font-size="11.5">openapi.yaml · 도메인 계약(Code SSOT)</text>
 
               <rect x="380" y="0" width="352" height="58" rx="10" fill="var(--svg-panel)" stroke="#06B6D4" />
               <text x="396" y="24" fill="#67E8F9" font-size="12" font-weight="800">API Mock 바인딩 코딩 &amp; FE/BE 병렬 개발</text>
@@ -1097,7 +1097,7 @@
           </div>
           <div class="compact-card">
             <h3><span class="tag tag-emerald">FE / BE 개발자</span> Code SSOT (Contract-First 병렬 개발)</h3>
-            <p>백엔드 완성 전에도 <code>00_domain_contracts.md</code>의 API Mock 계약을 인터페이스 정본 삼아 무대기 병렬 개발을 진행합니다.</p>
+            <p>백엔드 완성 전에도 <code>contracts/openapi.yaml</code>(해설 <code>00_domain_contracts.md</code>)의 API Mock 계약을 인터페이스 정본 삼아 무대기 병렬 개발을 진행합니다.</p>
           </div>
         </div>
       </div>
@@ -1123,7 +1123,7 @@
               <rect width="244" height="218" rx="14" fill="var(--svg-panel)" stroke="#6366F1" stroke-width="2" />
               <text x="20" y="32" fill="#818CF8" font-size="12" font-weight="800">STAGE 01 · PO/PM</text>
               <text x="20" y="58" fill="var(--svg-text)" font-size="15.5" font-weight="800">요구사항 정의 &amp; 정본화</text>
-              <text x="20" y="88" fill="var(--svg-sub)" font-size="11.5">• 마스터 정책서 · 도메인 계약</text>
+              <text x="20" y="88" fill="var(--svg-sub)" font-size="11.5">• 도메인별 정본(PRD) · 도메인 계약</text>
               <text x="20" y="110" fill="var(--svg-sub)" font-size="11.5">• 화면별 요약본(Digest) 갱신</text>
               <text x="20" y="132" fill="var(--svg-sub)" font-size="11.5">• LATEST_TASK.md 지시서 생성</text>
               <rect x="20" y="160" width="204" height="38" rx="8" fill="rgba(99,102,241,0.16)" />
@@ -1230,7 +1230,7 @@
               <text x="24" y="36" fill="#818CF8" font-size="12.5" font-weight="800">REPO A · 기획/디자인 정본 저장소</text>
               <text x="24" y="62" fill="var(--svg-text)" font-size="18" font-weight="800">spec-repo (SSOT · PO/PM 오너십)</text>
               <rect x="24" y="82" width="402" height="148" rx="10" fill="var(--svg-card)" stroke="var(--svg-stroke)" />
-              <text x="40" y="110" fill="#A5B4FC" font-size="12" font-weight="700">📁 docs/specs/ · 도메인별 마스터 정책서 &amp; 화면 명세</text>
+              <text x="40" y="110" fill="#A5B4FC" font-size="12" font-weight="700">📁 docs/specs/ · 도메인별 정본(PRD) &amp; 화면 명세</text>
               <text x="40" y="136" fill="#67E8F9" font-size="12" font-weight="700">📁 docs/contracts/ · 공통 도메인·API Mock &amp; 표준 UI 계약</text>
               <text x="40" y="162" fill="#34D399" font-size="12" font-weight="700">📁 docs/digest/ · 화면코드별 요약 명세 &amp; canon_index.md</text>
               <text x="40" y="188" fill="#FBBF24" font-size="12" font-weight="700">📁 docs/changes/ · questions/ · 지시서 &amp; 질문 아카이브</text>
@@ -1686,7 +1686,7 @@
             <tr>
               <td><strong>추적 ID</strong><br><span style="font-size:11px;color:var(--text-muted);">Traceability ID / POL-*</span></td>
               <td><strong>정책 추적 식별자</strong></td>
-              <td>비즈니스 정책 항목마다 PO/PM이 부여하는 고유 식별자(<code>POL-도메인-번호</code>). PRD ↔ Figma 색인 ↔ API 스키마 ↔ 테스트 코드 ↔ Git 커밋에 동일 부여하여 AI가 영향 범위를 1초 만에 추출함.</td>
+              <td>비즈니스 정책 항목마다 PO/PM이 부여하는 영구 식별자(<code>POL-도메인-번호</code>). PRD ↔ Figma 색인 ↔ API 스키마 ↔ 테스트 코드 ↔ Git 커밋에 동일 부여하여 AI가 영향 범위를 1초 만에 추출함.</td>
             </tr>
             <tr>
               <td><strong>질문 등급</strong><br><span style="font-size:11px;color:var(--text-muted);">Blocking vs ASSUMPTION</span></td>
