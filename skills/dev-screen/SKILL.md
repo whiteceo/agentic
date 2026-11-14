@@ -22,8 +22,8 @@ description: 자기에게 배정된 작업 지시서(TASK)의 화면을 요약�
 3. 시안이 `Ready for Dev`가 아니거나 화면 상태 5종이 빠졌으면 알린다.
 
 ## 4. 정본에 없는 것
-- **Blocking 범주**: `gh issue create --repo <org>/<spec-repo> --title "[<도메인>] <제목>" --label "domain:<도메인>" --label blocking-question` → 그 분기를 미구현 예외 + `// [BLOCKED: Q-<도메인>-<번호>]`로 막고 다른 작업을 계속한다.
-- **사소한 것**: 같은 명령에 `--label assumption-question` → `// [ASSUMPTION: Q-<도메인>-<번호>] <가정>`을 달고 계속한다.
+- **Blocking 범주**: `gh issue create --repo <org>/<spec-repo> --title "[<하위 도메인>] <제목>" --label "domain:<하위 도메인>" --label blocking-question` → 그 분기를 미구현 예외 + `// [BLOCKED: Q-<하위 도메인>-<번호>]`로 막고 다른 작업을 계속한다.
+- **사소한 것**: 같은 명령에 `--label assumption-question` → `// [ASSUMPTION: Q-<하위 도메인>-<번호>] <가정>`을 달고 계속한다.
 - `gh`가 실패하면 멈추고 사용자에게 알린다.
 - 이전 질문이 닫혔으면 정리한다: `completed`는 `// @policy POL-...`로 바꾸고, `not_planned`는 가정 코드를 되돌리고, `duplicate`는 원본 Q-ID로 바꾼다.
 

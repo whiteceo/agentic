@@ -514,7 +514,7 @@
       <div class="sit"><h4>PR을 올릴 때</h4><dl><dt>언제</dt><dd>구현을 마쳤을 때</dd><dt>무엇을</dt><dd><code>/spec-check</code> 리포트를 확인한 뒤 PR을 올립니다.</dd><dt>어디서</dt><dd>GitHub 개발 저장소</dd><dt>끝 확인</dt><dd>자동 검사 통과 + 리뷰어 승인 → 병합</dd></dl></div>
     </div>
     <div class="role"><header><span class="lbl cy">리드</span><h3>테크리드 · 리드 PO/PM</h3></header><p>프로젝트 세팅을 시작하고, 매주 막힌 곳을 풉니다.</p>
-      <div class="sit"><h4>프로젝트를 시작할 때</h4><dl><dt>언제</dt><dd>새 프로젝트를 이 방식으로 시작할 때</dd><dt>무엇을</dt><dd>세팅 담당이 프로젝트 설치서를 자신의 AI에게 건네고 순서대로 진행합니다. 팀별 설정 질문 12개는 도메인 담당자와 함께 답합니다.</dd><dt>어디서</dt><dd>Claude Code + GitHub 설정 화면</dd><dt>끝 확인</dt><dd>팀 설정 파일(<code>agentic-env.yaml</code>)에 세팅 완료가 기록됨</dd></dl></div>
+      <div class="sit"><h4>프로젝트를 시작할 때</h4><dl><dt>언제</dt><dd>새 프로젝트를 이 방식으로 시작할 때</dd><dt>무엇을</dt><dd>세팅 담당이 프로젝트 설치서를 자신의 AI에게 건네고 순서대로 진행합니다. 팀별 설정 질문 12개는 하위 도메인 담당자와 함께 답합니다.</dd><dt>어디서</dt><dd>Claude Code + GitHub 설정 화면</dd><dt>끝 확인</dt><dd>팀 설정 파일(<code>agentic-env.yaml</code>)에 세팅 완료가 기록됨</dd></dl></div>
       <div class="sit"><h4>주간 회의</h4><dl><dt>언제</dt><dd>평소 주간 회의</dd><dt>무엇을</dt><dd>열린 Blocking 질문, 장애 뒤 정본 동기화가 남은 건, 담당자 없는 작업 지시서, 오래된 가정을 백로그와 함께 검토합니다.</dd><dt>어디서</dt><dd>GitHub Issues 라벨 필터 (<code>blocking-question</code>, <code>hotfix-sync</code>)</dd><dt>끝 확인</dt><dd>건마다 담당자와 다음 행동이 정해짐</dd></dl></div>
       <div class="sit"><h4>장애가 났을 때</h4><dl><dt>언제</dt><dd>운영 장애를 선언했을 때</dd><dt>무엇을</dt><dd>고친 코드를 먼저 배포하는 것을 승인합니다. 병합한 사람이 정본 동기화 Issue(<code>hotfix-sync</code>)를 올리고(AI가 대신 씀), 담당 PO/PM이 백로그에서 동기화합니다.</dd><dt>어디서</dt><dd>GitHub PR (<code>hotfix</code> 라벨)</dd><dt>끝 확인</dt><dd>동기화 Issue가 PM 백로그에 올라가 있음</dd></dl></div>
     </div>
@@ -590,9 +590,9 @@
     <div class="card"><span class="lbl cb">새로 합류한 사람이 한 번</span><h3>합류 안내</h3><p>팀원이 처음 합류할 때 자신의 AI에게 건넵니다. AI가 역할을 묻고 필요한 준비만 안내합니다. 세팅이 끝나기 전에 합류했다면 권한 요청과 도구 설치만 하고 기다립니다. <a href="./AI_에이전틱_합류_안내.md" download>받기</a></p></div>
   </div>
   <div class="phases">
-    <div class="ph"><span class="no">1</span><b>준비 · 설정</b><span class="who">세팅 담당 + 도메인 담당</span>저장소와 권한을 준비하고, 설정 질문 12개에 답해 팀 설정 파일을 만듭니다</div>
+    <div class="ph"><span class="no">1</span><b>준비 · 설정</b><span class="who">세팅 담당 + 하위 도메인 담당</span>저장소와 권한을 준비하고, 설정 질문 12개에 답해 팀 설정 파일을 만듭니다</div>
     <div class="ph"><span class="no">2</span><b>골격 설치</b><span class="who">세팅 담당의 AI</span>규약, 스킬, 스크립트, GitHub 자동화 2개를 저장소에 설치합니다</div>
-    <div class="ph"><span class="no">3</span><b>정본 만들기</b><span class="who">도메인 담당(PO/PM 또는 대행)</span>기존 기획서나 코드를 정본으로 정리합니다. 자료가 없으면 AI가 인터뷰로 초안을 씁니다</div>
+    <div class="ph"><span class="no">3</span><b>정본 만들기</b><span class="who">하위 도메인 담당(PO/PM 또는 대행)</span>기존 기획서나 코드를 정본으로 정리합니다. 자료가 없으면 AI가 인터뷰로 초안을 씁니다</div>
     <div class="ph"><span class="no">4</span><b>계약 고정</b><span class="who">FE · BE 리드</span>정본에서 API 계약과 화면 골격을 뽑습니다</div>
     <div class="ph par"><span class="no">선택</span><b>디자인 준비</b><span class="who">디자인 리드 + FE 리드</span>디자인 토큰과 컴포넌트를 코드와 연결합니다(선택 부록)</div>
     <div class="ph"><span class="no">5</span><b>관문 · 시범</b><span class="who">세팅 담당 → 전원</span>필수 자동 검사와 배포 관문을 켜고, 실제 작업 한 건으로 시범 운영합니다</div>
@@ -601,9 +601,9 @@
     <table>
       <thead><tr><th>프로젝트 유형</th><th>시작 방법</th><th>먼저 정할 것</th></tr></thead>
       <tbody>
-        <tr><td>신규 구축</td><td>저장소 2개 생성 → 기획 자료로 정본 초안 작성 → API 계약 수립 → 구현</td><td>저장소 · <span class="t" tabindex="0" data-tip="업무 영역 단위. 예: 회원, 주문, 정산. 도메인마다 담당 PO/PM과 정본이 따로 있다.">도메인</span> · 담당자 · 화면 코드</td></tr>
-        <tr><td>전면 리뉴얼</td><td>기존 코드를 AI가 역분석 → 의심스러운 로직은 질문으로 확인(도메인당 한 번에 20건까지) → 리뉴얼 요건 반영</td><td>도메인 · 담당자 · 배포 방식</td></tr>
-        <tr><td>운영 · 고도화</td><td>이번에 고칠 도메인만 정본으로 정리 → 그 도메인부터 관문 적용</td><td>기준 브랜치 · 배포 방식 · CI 인증 키</td></tr>
+        <tr><td>신규 구축</td><td>저장소 2개 생성 → 기획 자료로 정본 초안 작성 → API 계약 수립 → 구현</td><td>저장소 · <span class="t" tabindex="0" data-tip="업무 영역 단위. 예: 회원, 주문, 정산. 하위 도메인마다 담당 PO/PM과 정본이 따로 있다.">하위 도메인</span> · 담당자 · 화면 코드</td></tr>
+        <tr><td>전면 리뉴얼</td><td>기존 코드를 AI가 역분석 → 의심스러운 로직은 질문으로 확인(하위 도메인당 한 번에 20건까지) → 리뉴얼 요건 반영</td><td>하위 도메인 · 담당자 · 배포 방식</td></tr>
+        <tr><td>운영 · 고도화</td><td>이번에 고칠 하위 도메인만 정본으로 정리 → 그 하위 도메인부터 관문 적용</td><td>기준 브랜치 · 배포 방식 · CI 인증 키</td></tr>
       </tbody>
     </table>
   </div>
@@ -621,7 +621,7 @@
   <div class="grid g2">
     <div class="card"><span class="lbl cc">spec-repo · PO/PM 승인</span>
       <ul class="tree">
-        <li><span>docs/specs/</span><span>도메인별 정본 · 정책 번호 대장</span></li>
+        <li><span>docs/specs/</span><span>하위 도메인별 정본 · 정책 번호 대장</span></li>
         <li><span>contracts/openapi.yaml</span><span>API 계약 (기계 검증 형식)</span></li>
         <li><span>docs/digest/</span><span>화면별 요약본</span></li>
         <li><span>docs/changes/</span><span>작업 지시서 (1건 1파일)</span></li>
@@ -652,9 +652,9 @@
   <h3 class="subh">스킬 5종</h3>
   <p class="lead" style="margin-bottom:24px">원문은 이 저장소의 <code>skills/</code> 폴더에 있고, 설치할 때 각 저장소의 <code>.claude/skills/</code>로 복사합니다.</p>
   <div class="grid g3" style="margin-bottom:16px;">
-    <div class="card"><code class="cc">/doc-init</code><h3>초기 정본 만들기</h3><p>기획서, 레거시 코드, 인터뷰로 표준 정본과 정책 번호 초안, 화면 요약본을 만듭니다. 의심스러운 레거시 로직은 질문으로 올립니다. <span style="color:var(--tx3)">· 도메인 담당</span></p></div>
+    <div class="card"><code class="cc">/doc-init</code><h3>초기 정본 만들기</h3><p>기획서, 레거시 코드, 인터뷰로 표준 정본과 정책 번호 초안, 화면 요약본을 만듭니다. 의심스러운 레거시 로직은 질문으로 올립니다. <span style="color:var(--tx3)">· 하위 도메인 담당</span></p></div>
     <div class="card"><code class="cc">/doc-rule</code><h3>공통 규칙 추출</h3><p>정본에서 API 계약과 표준 화면 골격을 뽑아 정리합니다. <span style="color:var(--tx3)">· FE · BE 리드</span></p></div>
-    <div class="card"><code class="cc">/doc-update</code><h3>정본 개정</h3><p>정책 번호로 영향 범위를 찾고, UI 변경 여부를 제안하고, 정본을 고친 뒤 담당자가 지정된 작업 지시서를 발행합니다. <span style="color:var(--tx3)">· 도메인 담당</span></p></div>
+    <div class="card"><code class="cc">/doc-update</code><h3>정본 개정</h3><p>정책 번호로 영향 범위를 찾고, UI 변경 여부를 제안하고, 정본을 고친 뒤 담당자가 지정된 작업 지시서를 발행합니다. <span style="color:var(--tx3)">· 하위 도메인 담당</span></p></div>
   </div>
   <div class="grid g2">
     <div class="card"><code class="cb">/dev-screen</code><h3>화면 구현</h3><p>배정된 작업 지시서만 골라 요약본과 필요한 API 부분만 읽고 구현합니다. 빈칸은 질문 종류에 따라 멈추거나 가정하고, 마지막에 검사를 돌립니다. <span style="color:var(--tx3)">· FE · BE</span></p></div>
@@ -675,7 +675,7 @@
     <div><b>화면 요약본</b><small>Digest</small><p>화면 하나에 필요한 필드 · 상태 · 모달 · 계산식만 뽑은 요약. AI는 정본 전체 대신 이것을 읽어 토큰(사용량)을 아낍니다.</p></div>
     <div><b>작업 지시서</b><small>TASK</small><p>지시 1건에 파일 1개. UI 변경 여부와 담당자가 적혀 있고, AI는 내 계정이 적힌 지시서만 맡습니다.</p></div>
     <div><b>2단계 검수</b><small>CI + AI 리포트</small><p>자동 검사는 결과가 늘 같은 검사만 막고, AI 판정은 PR 리포트로 남겨 리뷰어가 정합니다.</p></div>
-    <div><b>팀 설정 파일</b><small>agentic-env.yaml</small><p>설정 질문 12개의 답을 적어 둔 파일. 도메인, 담당자, 켤 선택 기능은 여기서 바꿉니다.</p></div>
+    <div><b>팀 설정 파일</b><small>agentic-env.yaml</small><p>설정 질문 12개의 답을 적어 둔 파일. 하위 도메인, 담당자, 켤 선택 기능은 여기서 바꿉니다.</p></div>
   </div>
 </section>
 

@@ -8,9 +8,9 @@ description: 병합된 정본에서 FE와 BE가 함께 쓰는 API 계약(contrac
 규칙은 `AGENTS.md`를 따른다. 결과는 PR이며 FE 리드와 BE 리드가 모두 리뷰한다.
 
 ## 1. API 계약 (`contracts/openapi.yaml`)
-1. 도메인별 식별자 접두어와 공통 상태값(enum)과 한글 라벨.
+1. 하위 도메인별 식별자 접두어와 공통 상태값(enum)과 한글 라벨.
 2. 화면이 쓰는 엔드포인트와 요청 · 응답 스키마, 예시 응답(FE가 서버 완성 전에 쓸 수 있게).
-3. 정책이 걸린 필드 · 엔드포인트의 `description`에 `[POL-<도메인>-<번호>]`.
+3. 정책이 걸린 필드 · 엔드포인트의 `description`에 `[POL-<하위 도메인>-<번호>]`.
 4. `POL-`이 붙은 필드의 의미 · 산식은 정본에 있는 그대로만 쓴다. 정본에 없으면 질문 Issue로 올린다.
 
 ## 2. 화면 골격 (`docs/contracts/00_ui_system.md`)
