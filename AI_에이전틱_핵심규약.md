@@ -47,7 +47,7 @@ PO/PM 결정 → 정본 PR(POL-ID) → TASK 파일 → 구현(AI는 요약본만
 
 ## 5. 관문 (자동 관문과 판정 관문)
 
-관문은 두 갈래다. 판정 3분류(확인 · 해석 · 선택), 수행자 독립 조건, 위험 등급 A의 원본은 DDD 방법론 L2(https://github.com/whiteceo/sanjunmo-platform `docs/ddd/methodology.md`)이고, 이 절은 이 체계의 원칙만 적는다.
+관문은 두 갈래다. 판정 3분류(확인 · 해석 · 선택), 수행자 독립 조건, 위험 등급 A의 원본은 DDD 방법론 L2([DDD 방법론 저장소] `docs/ddd/methodology.md`)이고, 이 절은 이 체계의 원칙만 적는다.
 
 | 관문 | 갈래 | 무엇을 | 운영 |
 | :--- | :--- | :--- | :--- |
