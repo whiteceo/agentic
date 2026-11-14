@@ -302,3 +302,7 @@ Claude Code 설계 검토 21건 중 정책 판단이 필요한 2건(비차단 AS
 
 - white "서명". 서명 대상 b29a58b의 `architecture/개념_아키텍처.md` · `architecture/에이전틱_도메인_설계.md`. 이 큰 틀(시스템마다 에이전틱 도메인 하나, 도메인끼리는 공개 계약, 얇은 중심, 에이전트 바깥의 가드레일, 도메인 안 에이전트 다섯 · 검사 넷, 결정과 책임은 사람, 관리 계층)이 굳었다. 아래 층(관제 평면 설계 · 실행 연결)은 이 틀 안에서 정한다.
 - 이어서: [시범 서비스] 정산 그림자 판정 시범 시작 조건이 채워졌다(시범 합의는 `discussions/정합성_점검.md` 3절).
+
+### 1.34 체계 이름 (white 결정, 2026-11-14)
+
+- white "Agentic Operating System? Agentic Mesh? 아니 우리는 Federated Agentic Operating Model 이다." 체계 전체의 분류 이름을 연합형 에이전틱 운영 모델(FAOM)로 정했다. README와 `개념_아키텍처.md` 1절. 상표용 고유 이름은 따로 정한다.

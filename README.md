@@ -1,5 +1,7 @@
 # AI 에이전틱 시스템 구축 규약
 
+> 체계 이름: **연합형 에이전틱 운영 모델(Federated Agentic Operating Model, FAOM)**. 전체 그림은 `architecture/개념_아키텍처.md`.
+
 AI를 쓰는 업무 환경(PO/PM · UIX 디자이너 · FE/BE 개발자 · 코딩 에이전트)에서 정본과 코드를 하나의 흐름으로 맞추는 규약 문서 모음.
 
 | 파일 | 누가 · 언제 |
