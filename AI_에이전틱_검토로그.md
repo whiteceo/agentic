@@ -342,3 +342,7 @@ Claude Code 설계 검토 21건 중 정책 판단이 필요한 2건(비차단 AS
 
 - `tools/policy_check.py`: 키마다 합치는 규칙(교집합 · 합집합 · 최소 · 최대 · 보관 바닥과 천장 · 테넌트만), 모르는 키 실패, 실효 정책 표(출처 파일). 시험 `tools/test_policy_check.py` 6개 통과(`python -m unittest tools/test_policy_check.py`).
 - 이어서 `tools/run_record_check.py`: 기록 줄 필수 칸(role · model · skill · criteria · head · actor), 수행자 = 작성자면 실패, 기준 판 어긋남은 경고. 시험 5개 통과. 실행 연결 4절 기계용 줄에 `criteria` · `actor` 칸을 더함.
+
+### 1.43 이 저장소에도 자동 관문 (2026-11-15)
+
+- `.github/workflows/check.yml`: PR · main push마다 `tools/` 시험과 `policies/` 예시의 정책 검사를 돌린다. 규약 원본 저장소가 자기 규칙(자동 관문은 결정적 검사만)을 먼저 따른다.

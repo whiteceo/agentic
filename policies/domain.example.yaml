@@ -1,0 +1,7 @@
+# 도메인 agentic-env.yaml 가운데 정책 부분 예시. 테넌트보다 엄하게만 정한다.
+allowed_models: [model-a]
+cost_caps:
+  max_tokens_per_run: 150000
+gate_floors: {risk_a: 3}
+agents:
+  enabled: false

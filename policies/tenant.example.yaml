@@ -1,0 +1,13 @@
+# 테넌트 칸 공통 정책 예시(실행_연결.md 9-1). 실제 값은 도메인 · 테넌트가 정한다.
+version: 1
+allowed_models: [model-a, model-b]
+blocked_data_classes: [실데이터, 개인정보]
+cost_caps:
+  max_tokens_per_run: 200000
+gate_floors: {risk_a: 2, release: 2}
+retention:
+  실행 증명:
+    floor_days: 365
+    ceiling_days: 1825
+    basis: 예시 값
+identity: github-app
