@@ -27,12 +27,12 @@ PO/PM 결정 → 정본 PR(POL-ID) → TASK 파일 → 구현(AI는 요약본만
 
 | 대상 | 형식 | 규칙 |
 | :--- | :--- | :--- |
-| 화면 코드 | `ADMN-<하위 도메인>-<NNN>` · `USER-<하위 도메인>-<NNN>` | 정본 `[B]` 표 · 요약본 · TASK · Figma 프레임 이름을 잇는 열쇠 |
+| 기능 코드 | `<채널>-<하위 도메인>-<NNN>`. 채널은 화면이면 `ADMN` · `USER`, 화면이 없으면 `BATCH` · `INTG`(연동) · `DATA` 등 | 정본 표 · 요약본 · TASK · (화면이면) Figma 프레임 이름을 잇는 열쇠. 화면 코드는 기능 코드의 한 종류다. 화면 없는 하위 도메인도 같은 열쇠로 묶는다 |
 | 정책 ID | `POL-<하위 도메인>-<NNN>` | `docs/specs/_registry.yaml`에 예약해 쓴다. AI는 번호를 제안만 하고 정본 PR 병합으로 확정된다. 지운 번호는 재사용하지 않는다. 같은 ID를 정본 · API `description` · 테스트 주석(`@policy POL-...`) · 커밋(`Ref: POL-...`)에 남긴다 |
 | 질문 ID | `Q-<하위 도메인>-<Issue번호>` | spec-repo Issue를 먼저 만들고 받은 번호를 쓴다. AI가 번호를 지어내지 않는다 |
 | 작업 지시서 | `docs/changes/<하위 도메인 폴더>/TASK-<하위 도메인>-YYYYMMDD-<hash>.md` | 지시 1건 = 파일 1개. 해시는 `scripts/new-id.sh`가 만든다 |
 
-- **TASK frontmatter**: `id` · `domain` · `ui_change`(yes/no) · `status`(OPEN/DONE) · `assignee`(GitHub 계정들) · `screen_ids` · `pol_ids` · `created_at`. 형식 예시는 `/doc-update` 스킬 3절.
+- **TASK frontmatter**: `id` · `domain` · `ui_change`(yes/no) · `status`(OPEN/DONE) · `assignee`(GitHub 계정들) · `screen_ids`(기능 코드 목록, 이름은 호환 때문에 그대로) · `pol_ids` · `created_at`. 형식 예시는 `/doc-update` 스킬 3절.
 - **정본 `[B]` 화면 명세 표**: 화면코드 · 화면명 · Figma URL · Ref POL · 화면 상태. 정책 본문은 `[C]`에 한 번만 쓰고, 제목 바로 위에 `<a id="pol-sett-005"></a>` 같은 고정 앵커를 둔다.
 - **색인은 커밋하지 않는다**: `canon_index.md`(화면 → 정본 절 · Figma URL)와 `open_tasks.md`(열린 TASK 목록)는 `scripts/sync-spec.sh`가 정본을 받을 때 로컬 `/docs`에 만든다. `open_tasks.md`만은 `spec.lock`이 아니라 spec-repo main의 최신 TASK로 만든다. 그래야 새 지시서가 정본 버전을 올리기 전에도 보인다. 여러 사람이 같은 색인 파일을 고쳐 충돌하는 일을 없애기 위해서다.
 - **정본 버전 고정**: app-repo의 `spec.lock`에 기준 spec-repo 커밋을 적고, `sync-spec.sh`와 CI는 그 버전만 받는다. 정본을 올릴 때는 `spec.lock`만 바꾸는 PR(`chore: bump spec`)을 따로 연다.
