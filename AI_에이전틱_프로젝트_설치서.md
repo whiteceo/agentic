@@ -33,7 +33,7 @@
 | 4 | 하위 도메인 목록: 약어(ID용) · 폴더명(경로용) · 정본 파일명 | `SETT`/`settlement`/`03_정산_환불.md` | 필수 |
 | 5 | 하위 도메인 담당자(질문을 받고 정본을 승인, PO/PM 또는 대행)와 부재 시 대리인. 대행이면 위임한 사람 | — | 필수 |
 | 6 | FE 리드 · BE 리드 GitHub 팀 핸들 | `@<org>/fe-leads`, `@<org>/be-leads` | 필수 |
-| 7 | Blocking 범주(더하거나 뺄 것) | 금액 · 정산 수수료 · 권한 · 상태 전이 · 개인정보 · 결제 연동 | 권장 |
+| 7 | Blocking 범주(더하거나 뺄 것) | 금액 · 세무 · 법적 의무 · 되돌릴 수 없는 결과 · 개인정보 · 권한 · 상태 전이 | 권장 |
 | 8 | 릴리스 방식(태그 · 릴리스 브랜치 · 수동)과 배포 작업 위치 | — | 필수 |
 | 9 | 핫픽스를 선언할 수 있는 사람 | 테크리드 · 온콜 | 필수 |
 | 10 | 화면 코드 접두어(채널 추가 여부) | `ADMN`, `USER` | 권장 |
@@ -56,7 +56,7 @@ domains:
     backup: <github-id>
     delegated_by: null             # 대행이면 위임한 사람
 teams: {fe_leads: "@<org>/fe-leads", be_leads: "@<org>/be-leads"}
-blocking_categories: [금액, 정산 수수료, 권한, 상태 전이, 개인정보, 결제 연동]
+blocking_categories: [금액, 세무·법적 의무, 되돌릴 수 없는 결과, 개인정보, 권한, 상태 전이]   # 기본은 위험 등급 A 범주 + 상태 전이. 도메인이 더함
 release: {method: tag, deploy_workflow: .github/workflows/<deploy>.yml}
 hotfix_declarers: [<github-id>]
 screen_prefix: [ADMN, USER]
