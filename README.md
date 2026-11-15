@@ -26,6 +26,7 @@ AI를 쓰는 업무 환경(PO/PM · UIX 디자이너 · FE/BE 개발자 · 코�
 | `architecture/에이전틱_도메인_설계.md` | 에이전틱 도메인 하나의 안쪽(C4 3단계): 에이전트 다섯 · 검사 넷 · 넓히기 |
 | `architecture/판정_기준_작성법.md` | 판정 기준 항목의 꼴(읽는 폭 · 기계 몫 · 판단 몫 · 필요한 입력), 갈림이 나왔을 때 기준 고치기 |
 | `architecture/실행_연결.md` | 워크플로 · 계정 · 관문 수준(C4 4단계 초안, 시범 뒤 설치서로) |
+| `tools/policy_check.py` | 정책 합침 검사의 기준 구현(실행 연결 10절 2 ~ 4번), 시험 `tools/test_policy_check.py` |
 | `research/에이전틱_방법론_조사.md` | 방법론 조사 기록(차수별로 한 파일에 누적) |
 | `discussions/DDD_안건.md` | DDD 방법론 쪽과 논의할 안건 |
 
